@@ -1,5 +1,5 @@
 
-import lunarlanderPackage.*;
+import lunarLanderPackage.*;
 
 public class LunarLanderSimulator {
     
