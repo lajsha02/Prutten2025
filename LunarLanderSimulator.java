@@ -1,4 +1,4 @@
-//import java.util.Scanner;
+import java.util.Scanner;
 import lunarLanderPackage.*;
 
 public class LunarLanderSimulator implements LunarLanderListener {
@@ -11,16 +11,20 @@ getFuel() → återstående bränsle i procent
 
 getState()*/
     
-    public void onShipUpdated(Shipevent e) {
-        System.out.println("Ship Height: " + e.getHeight().toString() + 
-                          "Ship Velocity: " + e.getVelocity().toString() +
-                           "Ship Fuel: " + e.getFuel().toString() +
-                           "Ship State: " + e.getState().toString());
+    public void onShipUpdate(ShipEvent e) {
+        System.out.println("Ship Height: " + e.getHeight() + 
+                          "Ship Velocity: " + e.getVelocity() +
+                           "Ship Fuel: " + e.getFuel() +
+                           "Ship State: " + e.getState());
     }
 
     
     public static void main(String[] args) {
-        System.out.println("Lunar Lander Simulator");
-        // Add your lunar lander logic here
+        System.out.println("Lunar Lander Simulator");      
+        LunarLander lander = new LunarLander();
+        //shutdown = new shutDownEngine();
+        LunarLanderSimulator simulator = new LunarLanderSimulator();
+        lander.setListener(simulator);
+        lander.run();
     }
 }
