@@ -2,23 +2,28 @@
 import lunarLanderPackage.*;
 import javax.swing.*;            // JFrame
 import java.awt.event.*;         // ActionListener, KeyListener, ActionEvent, KeyEvent
+import java.awt.Color;
 
 public class LunarLanderSimulatorG extends JFrame
   implements LunarLanderListener, ActionListener, KeyListener {
     String currentState; 
     JButton b = new JButton("Start Simulation");
     static JTextArea statusArea = new JTextArea(10, 10);
-    
+    LunarLander lander = new LunarLander();
+
+
   public LunarLanderSimulatorG(){
     setSize(500, 500);
     setVisible(true);
     add(b);
-    add(statusArea);
-    //setBackground(color.cyan);
+    setBackground(Color.GREEN);
+    add(new JScrollPane(statusArea));  
+
     /*setTitle("Lunar Lander Simulator");
     setVisible(true);*/
     b.addActionListener(this);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    lander.setListener(this);
 
     /*addKeyListener(this);
     addActionListener(this);
@@ -30,7 +35,28 @@ public class LunarLanderSimulatorG extends JFrame
 
     // from actionlistener
   public void actionPerformed(ActionEvent e) {
-    b.setText("Engine Started");
+    String label = e.getActionCommand();
+    switch (label) {  
+      case "Start Simulation":
+          lander.run();
+          b.setText("Start engine");
+          break;
+
+      case "Start Engine":
+          lander.startEngine();
+          b.setText("Shut down engine");
+          break;
+
+      case "Shut down engine":
+          lander.shutDownEngine();
+          b.setText("Start engine");
+          break;
+
+      case "Exit":
+        System.exit(0);
+        break;
+
+    }
   }
   // from keylistener
   public void keyPressed(KeyEvent e) {
@@ -53,7 +79,7 @@ public class LunarLanderSimulatorG extends JFrame
                        "Ship State: " + e.getState());
   }
 
-  public static void main (String[] args) {
+  public static void main (String[] u) {
     LunarLanderSimulatorG window = new LunarLanderSimulatorG();
   }
 

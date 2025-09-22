@@ -20,7 +20,6 @@ import lunarLanderPackage.*;
                                "Ship State: " + e.getState());
             if (!currentState.equals("hovering")) {
                 System.out.println("Ship State: " + e.getState());
-                System.exit(0);
             }
         }
 
@@ -49,6 +48,5 @@ import lunarLanderPackage.*;
                 
             }
             input.close();
-   
     }
     }
