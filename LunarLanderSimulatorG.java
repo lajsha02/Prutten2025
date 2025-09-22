@@ -14,7 +14,7 @@ public class LunarLanderSimulatorG extends JFrame
 
   public LunarLanderSimulatorG(){
     setSize(500, 500);
-    
+    setVisible(true);
     add(b);
     setBackground(Color.GREEN);
     add(new JScrollPane(statusArea));  
@@ -24,7 +24,6 @@ public class LunarLanderSimulatorG extends JFrame
     b.addActionListener(this);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     lander.setListener(this);
-    setVisible(true);
 
     /*addKeyListener(this);
     addActionListener(this);
@@ -39,16 +38,16 @@ public class LunarLanderSimulatorG extends JFrame
     String label = e.getActionCommand();
     switch (label) {  
       case "Start Simulation":
-          lander.run();
-          b.setText("Start engine");
+          new Thread(() -> lander.run()).start();  // i stället för lander.run();
+          b.setText("Start Engine");
           break;
 
       case "Start Engine":
           lander.startEngine();
-          b.setText("Shut down engine");
+          b.setText("Shut Down Engine");
           break;
 
-      case "Shut down engine":
+      case "Shut Down Engine":
           lander.shutDownEngine();
           b.setText("Start engine");
           break;
