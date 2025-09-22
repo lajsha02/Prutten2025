@@ -14,7 +14,7 @@ public class LunarLanderSimulatorG extends JFrame
 
   public LunarLanderSimulatorG(){
     setSize(500, 500);
-    setVisible(true);
+    
     add(b);
     setBackground(Color.GREEN);
     add(new JScrollPane(statusArea));  
@@ -24,6 +24,7 @@ public class LunarLanderSimulatorG extends JFrame
     b.addActionListener(this);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     lander.setListener(this);
+    setVisible(true);
 
     /*addKeyListener(this);
     addActionListener(this);
