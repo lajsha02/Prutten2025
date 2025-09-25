@@ -2,14 +2,14 @@ import java.util.Scanner;
 import lunarLanderPackage.*;
 
     public class LunarLanderSimulator implements LunarLanderListener {
-        String currentState; 
+        String currentState = "hovering"; 
         // Implementerar LunarLanderListener
     /* getHeight() → aktuell höjd i meter
     getVelocity() → aktuell hastighet i m/s
     getFuel() → återstående bränsle i procent
     getState()*/
 
-        public void onShipUpdated(Shipevent e) {
+        public void onShipUpdate(ShipEvent e) {
             currentState = e.getState();
             System.out.println("Ship Height: " + e.getHeight() + 
                               "Ship Velocity: " + e.getVelocity() +
@@ -32,11 +32,11 @@ import lunarLanderPackage.*;
             Scanner input = new Scanner(System.in);
             System.out.println("Press P to start the engine and A to shut it down: ");
             // Så länge som state är hovering så kan användaren styra
-
-            while (simulator.currentState == null || simulator.currentState.equals("hovering")) {
+            while (simulator.currentState.equals("hovering")) {
                 String S = input.nextLine();
                 if (S.equals("P")) {
                     lander.startEngine();
+                    System.out.println("Engine Started");
                 }
                 else if (S.equals("A")) { 
                     lander.shutDownEngine();
@@ -47,4 +47,3 @@ import lunarLanderPackage.*;
             input.close();
     }
     }
-    
