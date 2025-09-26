@@ -8,7 +8,7 @@ import lunarLanderPackage.*;
 public class LunarLanderSimulatorG extends JFrame
   implements LunarLanderListener, ActionListener, KeyListener {
     private String currentState; // klassattribut för att hålla koll på landarens status
-    private JButton b = new JButton("Start Simulation"); // knappen som startar simuleringen
+    private final JButton b = new JButton("Start Simulation"); // knappen som startar simuleringen
     private final JTextArea statusArea = new JTextArea(10, 10);
     private final LunarLander lander = new LunarLander();
 
@@ -16,10 +16,10 @@ public class LunarLanderSimulatorG extends JFrame
     private boolean GenerateAutopilot;
     private final int OVERRIDE_MS = 4000;          // hur länge användaren har kontroll
     private long manualOverrideExpiresAt = 0;      // timestamp i ms
-    private void touchManualOverride() {
+    private void touchManualOverride() { // nu + 4000 = sluttid av användarens input
         manualOverrideExpiresAt = System.currentTimeMillis() + OVERRIDE_MS;
     }
-    private boolean isManualOverrideActive() {
+    private boolean isManualOverrideActive() { // jämför om nu är före sluttiden. Om ja → manuell kontroll.
         return System.currentTimeMillis() < manualOverrideExpiresAt;
     }
 
@@ -33,6 +33,7 @@ public class LunarLanderSimulatorG extends JFrame
         setSize(500, 500);
         setLocationRelativeTo(null); // centrera på skärmen
 
+
         // --- Statusrutan ---
         statusArea.setEditable(false);     // visa bara text
         statusArea.setFocusable(false);    // sno inte fokus från ramen
@@ -40,7 +41,6 @@ public class LunarLanderSimulatorG extends JFrame
         statusArea.setFont(statusArea.getFont().deriveFont(22f));
 
         // --- Knapp ---
-        b = new JButton("Start Simulation");
         b.addActionListener(this);
         b.setFocusable(false);             // knappen får aldrig fokus
 
@@ -51,7 +51,7 @@ public class LunarLanderSimulatorG extends JFrame
         // --- Lyssnare ---
         addKeyListener(this);     // lyssna på piltangenter på ramen
         setFocusable(true);       // ramen måste vara fokusbar
-        lander.setListener(this);
+        lander.setListener(this); // koppla listener till landersimulation
 
         // --- Visa och säkra fokus ---
         setVisible(true);         // visa fönstret
@@ -150,12 +150,10 @@ public class LunarLanderSimulatorG extends JFrame
         }
 }
 
-
+// ==================== AUTOPILOT ========================
   public String Autopilot(ShipEvent e) {
     double vTarget;
-    if (e.getHeight() > 100) {
-      vTarget = -6.0; }
-    else if (e.getHeight() > 50) {
+    if (e.getHeight() > 50) {
       vTarget = -3.5; }
     else if (e.getHeight() > 20) {
       vTarget = -2.0; }
