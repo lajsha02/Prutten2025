@@ -1,19 +1,9 @@
-import java.util.*;
-import quoridor.model.QuoridorModel;
-import quoridor.model.BoardState;
+package quoridor.model;
 
-interface myObserver {
-  void update();
-}
-  
-interface myObservable {
-  void addObserver(myObserver o);
-  void removeObserver(myObserver o);
-  void notifyObservers();  
-}
+import java.util.*;
 
 public class ObservableModel extends QuoridorModel implements myObservable {
-  private List<myObserver> observers = new ArrayList<>();
+  private final List<myObserver> observers = new ArrayList<>();
   
   @Override
   public void addObserver(myObserver o) {
