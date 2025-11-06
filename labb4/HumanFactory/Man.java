@@ -1,0 +1,12 @@
+package HumanFactory;
+
+public class Man extends Human {
+  public Man(String name, String pnr) {
+    super(name, pnr);
+  }
+
+  @Override
+    public String toString() {
+        return "Jag är man och heter " + name;
+    }
+}

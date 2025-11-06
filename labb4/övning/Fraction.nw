@@ -1,0 +1,113 @@
+\title{En klass för bråk i Java}
+\author{Lisa}
+
+\maketitle
+\tableofcontents
+\section{Introduktion}
+
+vi vill göra bråk som vi har heltal i Java
+För att göra detta skapar vi en klass som heter \texttt{Fraction}
+Denna klass kommer representera ett bråk med en täljare och nämnare
+Utöver detta kommer vi göra operationer som addition, subtraktion, multiplikation och division
+
+\subsection{Bygga och kompilera}
+
+Vi vill skriva en byggfil för att använda med GNU Make.
+Vi har en huvudfil [[Makefile]] och vi vill inkludera en fil specifik för 
+klassen som heter [[Fraction.mk]].
+
+Eftersom klassen ska heta [[Fraction.mk]], så behöver vi 
+kompilera [[Fraction.class]] från [[Fraction.java]].
+
+<<Fraction.mk>>=
+Fraction.class: Fraction.java
+    javac Fraction.java
+@
+
+Vi vill även lägga till [[Fraction.class]] som en beroende till [[all]], så att
+den alltid byggs när vi kör [[make all]]
+<<Fraction.mk>>=
+all: Fraction.class
+@
+
+Själva Java-filen för tanglas från [[Fraction.nw]].
+<<Fraction.mk>>=
+Fraction.java: Fraction.nw
+    notangle -RFraction.java Fraction.nw > Fraction.java
+
+\section{Tester}
+
+Vi vill kunna testa klassen [[Fraction]] med JUnit.
+Vi skapar en fil som heter [[FractionTest.java]].
+
+<<FractionTest.java>>=
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+public class FractionTest {
+    <<FractionTest tests>>
+}
+Denna fil kommer att innehålla tester för alla metoder i klassen [[Fraction]].
+Vi lägger även till mål i byggfilen för att kompilera och köra testerna.
+
+<<Fraction.mk>>=
+FractionTest.class: FractionTest.java Fraction.class
+    javac -cp .:junit-4.12.jar FractionTest.java
+@ Vi har [[-cp .:junit-4.12.jar]] för att inkludera JUnit-biblioteket vid kompilering.
+Detta kräver att du har JUnit JAR-filen i samma katalog som din byggfil.
+
+Vi lägger även till ett mål för att köra testerna.
+<<Fraction.mk>>=
+test: FractionTest.class
+    java -cp .:junit-4.12.jar org.junit.runner.JUnitCore FractionTest
+@ Detta mål kör JUnit-testklassen och rapporterar resultaten i terminalen
+
+
+\section{Klassen Fraction}
+
+Filen [[Fraction.java]] innehåller definitionen av klassen \texttt{Fraction}.
+Översiktligt ser den ut så här:
+<<Fraction.java>>=
+<<imports>>
+
+public class Fraction{
+    << Fraction methods >>
+}
+@
+
+Vi vill testa först och implementera sedan.
+
+\section{Attribut och inkapsling}
+
+Vi vill att klassen \texttt{Fraction} ska ha två attribut: \texttt{numenator} och \texttt{denominator}.
+Dessa attribut ska vara privata för att skydda dem från direkt åtkomst utanför klassen.
+Vi skapar också en konstruktor för att initiera dessa attribut
+Och vi vill testa att de inte går att komma åt direkt
+<<Fraction.java>>=
+private int numenator;
+private int denominator;
+@
+
+\section{Konstruktor}
+Vi skapar en konstruktor för klassen \texttt{Fraction} som initierar alla attribut
+Vi vill kunna skapa bråk genom att ange täljare och nämnare
+Vi vill även kunna skapa ett bråk från en sträng som representerar bråket
+<<Fraction.java>>=
+public Fraction(int numerator, int denominator){
+    this.numerator = numerator;
+    this.denominator = denominator;
+}
+
+
+Testerna först, vi vill kunna skapa objekt på följande sätt:
+<<FractionTest tests>>=
+@@Test
+public void testConstructorWithIntegers(){
+    Fraction frac = new Fraction(3,2);
+}
+@@Test
+public void testConstructorWithString(){
+    Fraction frac = new Fraction("5/6");
+}
+
+
