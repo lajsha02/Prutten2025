@@ -72,7 +72,6 @@ Slutligen städreglerna:
 clean: clean-Suitcase
 clean-Suitcase:
 	rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
-	rm -f Suitcase.mk Suitcase.pdf
 	rm -f *.class *.java
 @
 
@@ -276,13 +275,13 @@ public class Client {
 @
 
 \subsubsection{Bygg upp strukturen (\texttt{suitcase})}
-Vi skapar roten (resväskan), underbehållare och löv.
+Vi skapar roten (resväskan), underbehållare och löv, som är kläder eller accessoarer.
 
 <<Client build-structure>>=
-    // Roten: själva resväskan (egen vikt 2.3 kg)
+    // Roten: själva resväskan
     Composite suitcase = new Composite("Resväska", 2.3);
 
-    // Större plagg (löven)
+    // Större plagg
     Leaf tshirt1 = new Leaf("T-shirt vit", 0.18);
     Leaf tshirt2 = new Leaf("T-shirt svart", 0.19);
     Leaf jeans   = new Leaf("Jeans", 0.75);
@@ -306,15 +305,11 @@ Vi skapar roten (resväskan), underbehållare och löv.
     påse.add(hårspännen);
     necessar.add(påse);
 
-    // Mindre väska för elektronik (behållare) — nivå två
+    // Mindre väska (nivå två)
     Composite techbag = new Composite("Tech-väska", 0.20);
     Leaf laddare  = new Leaf("Laddare", 0.15);
-    Leaf hörlurar = new Leaf("Hörlurar", 0.08);
-    Leaf powerbank = new Leaf("Powerbank", 0.18);
     techbag.add(laddare);
-    techbag.add(hörlurar);
-    techbag.add(powerbank);
-
+    
     // Packa allt i resväskan
     suitcase.add(tshirt1);
     suitcase.add(tshirt2);
@@ -333,12 +328,11 @@ Vi skapar roten (resväskan), underbehållare och löv.
 @
 
 \subsubsection{Ta bort några saker/behållare}
-Vi tar bort en pryl i en behållare, hela teknikväskan och påsen i necessären.
+Vi tar bort en pryl i teknikväskan och påsen i necessären.
 
-<<Client removals>>=
-    techbag.remove(powerbank);      // ta bort en pryl i behållare
-    suitcase.remove(techbag);       // ta bort hela behållaren
-    necessar.remove(påse);          // ta bort tredje nivåns behållare
+<<Client removals>>=  
+    suitcase.remove(techbag);       
+    necessar.remove(påse);
 @
 
 \subsubsection{Skriv ut totalvikt och innehåll (efter borttagning)}
@@ -347,18 +341,3 @@ Vi tar bort en pryl i en behållare, hela teknikväskan och påsen i necessären
     System.out.println("Innehåll efter borttagning:");
     System.out.println(suitcase.toString());
 @
-
-
-\section{Kommentarer om korrekthet och mönstertrohet}
-\begin{itemize}
-  \item \texttt{getWeight()} anropat på ett \texttt{Composite}-objekt itererar rekursivt över alla barn
-        (och deras barn), vilket följer \emph{Composite}-mönstrets idé.
-  \item \texttt{toString()} på \texttt{Composite} bygger en rekursiv presentation av hela trädet.
-  \item \texttt{Leaf} saknar \texttt{add}/\texttt{remove} och är därmed ett \emph{löv}.
-  \item Egen vikt för behållare ingår alltid i totalvikten, som efterfrågats i labbtexten.
-\end{itemize}
-
-\section{Bygginstruktion}
-Kör \texttt{make} för att generera \texttt{Suitcase.pdf} och \texttt{Suitcase.mk}.
-Kör \texttt{make classes} för att kompilera Javafilerna och \texttt{make run}
-för att köra demon av \texttt{Client}.

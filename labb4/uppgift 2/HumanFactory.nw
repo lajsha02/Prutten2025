@@ -75,7 +75,6 @@ Städregler:
 clean: clean-HumanFactory
 clean-HumanFactory:
 	rm -f HumanFactory.tex HumanFactory.aux HumanFactory.log HumanFactory.toc
-	rm -f HumanFactory.mk HumanFactory.pdf
 	rm -f human/*.class *.class
 	rm -f TestHuman.java human/*.java
 	rmdir human 2>/dev/null || true
@@ -160,33 +159,34 @@ Vi exponerar namn och pnr. \texttt{toString()} implementeras i subklasserna.
 	@Override public abstract String toString();
 @
 
-\subsection{\texttt{NonBinary}}
+\subsection{\texttt{NonBinary klassen}}
 \noindent \textbf{Ansvar:} konkret \texttt{Human} för icke\-binär. Klassen är \emph{paket\-synlig}
 (ingen \texttt{public}) och \emph{final} så klienten varken kan referera till den
 eller ärva utanför paketet.
 
-Filen [[human/NonBinary.java]] ser ut så här:
+Översiktligt ser filen [[NonBinary]] ut så här:
 
-<<human/NonBinary.java>>=
+<<NonBinary.java>>=
 package human;
 
 final class NonBinary extends Human {
-	<<NonBinary ctor>>
-	<<NonBinary toString>>
+	<<NonBinary konstruktor>>
+	<<NonBinary methods>>
 }
 @
 
 \subsubsection{Konstruktor}
 Också paket\-synlig (ingen modifierare) — kan inte anropas utanför paketet.
 
-<<NonBinary ctor>>=
+<<NonBinary konstruktor>>=
 	NonBinary(String name, String pnr) {
 		super(name, pnr);
 	}
 @
 
-\subsubsection{\texttt{toString}}
-<<NonBinary toString>>=
+\subsubsection{\texttt{Metoder}}
+\subsubsubsection{toString}
+<<NonBinary methods>>=
 	@Override
 	public String toString() {
 		return "Jag är icke-binär och heter " + name;
@@ -194,61 +194,43 @@ Också paket\-synlig (ingen modifierare) — kan inte anropas utanför paketet.
 @
 
 \subsection{\texttt{Woman}}
-\noindent \textbf{Ansvar:} konkret \texttt{Human} för kvinna. Paket\-synlig och \texttt{final}.
+\noindent \textbf{Ansvar:} konkret \texttt{Human} för kvinna. Implementeras på precis samma sätt som NonBinary
 
-Filen [[human/Woman.java]]:
+Filen [[Woman.java]]:
 
-<<human/Woman.java>>=
-package human;
+<<Woman.java>>=
 
-final class Woman extends Human {
-	<<Woman ctor>>
-	<<Woman toString>>
+package HumanFactory;
+
+public  class Woman extends Human {
+    public Woman(String name, String pnr) {
+      super(name, pnr);
+    }
+    @Override
+    public String toString() {
+        return "Jag är kvinna och heter " + name;
+    }
 }
-@
-
-\subsubsection{Konstruktor}
-<<Woman ctor>>=
-	Woman(String name, String pnr) {
-		super(name, pnr);
-	}
-@
-
-\subsubsection{\texttt{toString}}
-<<Woman toString>>=
-	@Override
-	public String toString() {
-		return "Jag är kvinna och heter " + name;
-	}
 @
 
 \subsection{\texttt{Man}}
-\noindent \textbf{Ansvar:} konkret \texttt{Human} för man. Paket\-synlig och \texttt{final}.
+\noindent \textbf{Ansvar:} konkret \texttt{Human} för man. Implementeras på precis samma sätt som NonBinary och Woman
 
-Filen [[human/Man.java]]:
+Filen [[Man.java]]:
 
-<<human/Man.java>>=
-package human;
+<<Man.java>>=
+package HumanFactory;
 
-final class Man extends Human {
-	<<Man ctor>>
-	<<Man toString>>
+public class Man extends Human {
+  public Man(String name, String pnr) {
+    super(name, pnr);
+  }
+
+  @Override
+    public String toString() {
+        return "Jag är man och heter " + name;
+    }
 }
-@
-
-\subsubsection{Konstruktor}
-<<Man ctor>>=
-	Man(String name, String pnr) {
-		super(name, pnr);
-	}
-@
-
-\subsubsection{\texttt{toString}}
-<<Man toString>>=
-	@Override
-	public String toString() {
-		return "Jag är man och heter " + name;
-	}
 @
 
 \subsection{\texttt{TestHuman}}
