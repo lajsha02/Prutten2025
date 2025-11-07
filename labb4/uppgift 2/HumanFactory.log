@@ -1,0 +1,237 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.7)  7 NOV 2025 10:46
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**HumanFactory.tex
+(./HumanFactory.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/local/texlive/2025basic/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2025basic/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2024/06/29 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count196
+\c@section=\count197
+\c@subsection=\count198
+\c@subsubsection=\count199
+\c@paragraph=\count266
+\c@subparagraph=\count267
+\c@figure=\count268
+\c@table=\count269
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen141
+)
+(/Users/lisadahl/Library/texmf/tex/latex/noweb/noweb.sty
+\nwmarginglue=\dimen142
+\codehsize=\dimen143
+\codemargin=\dimen144
+\nwdefspace=\dimen145
+\equivbox=\box52
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 80.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 80.
+\plusequivbox=\box53
+\@nwbegincodelinewidth=\dimen146
+\nwcodetopsep=\skip51
+\nwcodepenalty=\count270
+\nwbreakcodespace=\dimen147
+\@original@textwidth=\dimen148
+\nwcodecommentsep=\skip52
+\@nwlopage=\count271
+\@nwhipage=\count272
+\@nwlosub=\count273
+\@nwhisub=\count274
+\@nwpagetemp=\count275
+\@nwpagecount=\count276
+\sub@page=\count277
+\@nwalph@n=\count278
+\nw@chunkcount=\count279
+\@commacount=\count280
+\nwix@counter=\count281
+)
+(/usr/local/texlive/2025basic/texmf-dist/tex/latex/l3backend/l3backend-pdftex.d
+ef
+File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count282
+\l__pdf_internal_box=\box54
+) (./HumanFactory.aux)
+\openout1 = `HumanFactory.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 1.
+LaTeX Font Info:    ... okay on input line 1.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 4.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 4.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 4.
+ (./HumanFactory.toc)
+\tf@toc=\write3
+\openout3 = `HumanFactory.toc'.
+
+LaTeX Font Info:    Trying to load font information for OMS+cmtt on input line 
+17.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 17.
+
+
+LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 17.
+
+
+Overfull \hbox (23.52744pt too wide) in paragraph at lines 20--22
+\OT1/cmr/m/n/10 Precis som i uppgift 1 l^^Water vi denna \OT1/cmtt/m/n/10 .nw \
+OT1/cmr/m/n/10 t^^?angla en maskin-genererad \OT1/cmtt/m/n/10 HumanFactory.mk
+ []
+
+
+
+[1
+
+{/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (41.99963pt too wide) in paragraph at lines 47--47
+ []        \OT1/cmtt/m/n/10 notangle -L'//line %L "%F"%N' -Rhuman/NonBinary.jav
+a HumanFactory.nw > human/NonBinary.java[]  
+ []
+
+
+Overfull \hbox (41.99963pt too wide) in paragraph at lines 65--65
+ []\OT1/cmtt/m/n/10 classes-human: human/Human.java human/NonBinary.java human/
+Woman.java human/Man.java TestHuman.java[]  
+ []
+
+
+Overfull \hbox (173.24849pt too wide) in paragraph at lines 66--66
+ []        \OT1/cmtt/m/n/10 @if [ -x ./noerr.pl ]; then ./noerr.pl javac human/
+*.java TestHuman.java; else javac human/*.java TestHuman.java; fi[]  
+ []
+
+
+
+[2]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 88.
+
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 118--118
+ []                \OT1/cmtt/m/n/10 if (name == null || name.isBlank()) throw n
+ew IllegalArgumentException("name");[]  
+ []
+
+
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 119--119
+ []                \OT1/cmtt/m/n/10 if (pnr == null || pnr.length() < 2) throw 
+new IllegalArgumentException("pnr");[]  
+ []
+
+
+
+[3]
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 137--137
+ []                \OT1/cmtt/m/n/10 if (pnr == null || pnr.length() < 2) throw 
+new IllegalArgumentException("pnr");[]  
+ []
+
+
+Overfull \hbox (120.74895pt too wide) in paragraph at lines 143--143
+ []                        \OT1/cmtt/m/n/10 throw new IllegalArgumentException(
+"pnr: n^^?ast sista tecknet m^^Waste vara siffra eller '0'");[]  
+ []
+
+
+
+[4]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 188.
+
+
+[5]
+
+[6]
+Overfull \hbox (47.24959pt too wide) in paragraph at lines 273--273
+ []                \OT1/cmtt/m/n/10 Human billie = Human.create("Billie", "xxxx
+xx-560x"); // n^^?ast sista = 0 -> NonBinary[]  
+ []
+
+
+Overfull \hbox (26.24977pt too wide) in paragraph at lines 274--274
+ []                \OT1/cmtt/m/n/10 Human anna   = Human.create("Anna",   "xxxx
+xx-642x"); // n^^?ast sista = 2 -> Woman[]  
+ []
+
+
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 275--275
+ []                \OT1/cmtt/m/n/10 Human magnus = Human.create("Magnus", "xxxx
+xx-011x"); // n^^?ast sista = 1 -> Man[]  
+ []
+
+
+Overfull \hbox (36.74968pt too wide) in paragraph at lines 281--281
+ []                \OT1/cmtt/m/n/10 // F^^?oljande rader ska INTE kompilera (de
+monstreras separat, inte i detta program):[]  
+ []
+
+
+Overfull \hbox (47.24959pt too wide) in paragraph at lines 282--282
+ []                \OT1/cmtt/m/n/10 // NonBinary nb = new NonBinary("X", "00000
+0-5600");    // ej synlig utanf^^?or paketet[]  
+ []
+
+
+Overfull \hbox (62.99945pt too wide) in paragraph at lines 283--283
+ []                \OT1/cmtt/m/n/10 // Human h = new Human("X", "000000-5600") 
+{};          // Human() ej synlig + abstrakt[]  
+ []
+
+
+
+[7] (./HumanFactory.aux)
+ ***********
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+ ***********
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 788 strings out of 474662
+ 13168 string characters out of 5751109
+ 413188 words of memory out of 5000000
+ 23887 multiletter control sequences out of 15000+600000
+ 564279 words of font info for 55 fonts, out of 8000000 for 9000
+ 319 hyphenation exceptions out of 8191
+ 35i,6n,50p,428b,388s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </Users/lisadahl/Library/texlive/2025basic/texmf-var/fonts/pk/ljfour/jknappe
+n/ec/tcrm1000.600pk></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2025basic/texmf-dist/font
+s/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2025basic/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025basic/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025basic/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2025basic/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on HumanFactory.pdf (7 pages, 136756 bytes).
+PDF statistics:
+ 78 PDF objects out of 1000 (max. 8388607)
+ 49 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

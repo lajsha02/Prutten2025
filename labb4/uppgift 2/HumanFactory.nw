@@ -1,0 +1,285 @@
+\title{Human factory i Java (paket \texttt{human})}
+\author{Lisa Dahl och Mostafa Shihadeh}
+
+\maketitle
+\tableofcontents
+
+\section{Introduktion}
+I denna del implementerar vi \emph{Human factory}. Vi skriver en abstrakt
+\texttt{Human} och tre konkreta subklasser: \texttt{NonBinary}, \texttt{Woman}
+och \texttt{Man}. En statisk fabriksmetod i \texttt{Human} väljer subklass baserat
+på personnumrets näst sista tecken: \texttt{'0'} $\Rightarrow$ \texttt{NonBinary};
+udda siffra $\Rightarrow$ \texttt{Man}; jämn (men ej \texttt{'0'}) $\Rightarrow$ \texttt{Woman}.
+
+Vi placerar \texttt{Human}, \texttt{NonBinary}, \texttt{Woman}, \texttt{Man}
+i paketet \texttt{human}. Testprogrammet \texttt{TestHuman} ligger på nivån
+ovan (default\-paketet) och får endast skapa instanser via fabriken. Det ska
+inte gå att kompilera \texttt{new NonBinary(...)} eller \texttt{new Human()\{\}}.
+
+\subsection{Bygga och kompilera}
+Precis som i uppgift 1 låter vi denna \texttt{.nw} tängla en maskin\-genererad
+\texttt{HumanFactory.mk} som toppens \texttt{Makefile} \emph{inkluderar}.
+
+Först lägger vi grundmålen, inkl.\ PDF:
+
+<<HumanFactory.mk>>=
+TARGETS= HumanFactory.pdf HumanFactory.mk
+all: classes-human HumanFactory.pdf
+
+HumanFactory.pdf: HumanFactory.tex
+	pdflatex -interaction=nonstopmode -halt-on-error HumanFactory.tex
+	pdflatex -interaction=nonstopmode -halt-on-error HumanFactory.tex
+
+HumanFactory.tex: HumanFactory.nw
+	noweave -latex HumanFactory.nw > HumanFactory.tex
+@
+
+Därefter regler för att tängla ut Java\-källorna (\texttt{human/} skapas vid behov)
+med radmarkörer (bra med \texttt{noerr.pl}):
+
+<<HumanFactory.mk>>=
+human/Human.java: HumanFactory.nw
+	mkdir -p human
+	notangle -L'//line %L "%F"%N' -Rhuman/Human.java HumanFactory.nw > human/Human.java
+
+human/NonBinary.java: HumanFactory.nw
+	mkdir -p human
+	notangle -L'//line %L "%F"%N' -Rhuman/NonBinary.java HumanFactory.nw > human/NonBinary.java
+
+human/Woman.java: HumanFactory.nw
+	mkdir -p human
+	notangle -L'//line %L "%F"%N' -Rhuman/Woman.java HumanFactory.nw > human/Woman.java
+
+human/Man.java: HumanFactory.nw
+	mkdir -p human
+	notangle -L'//line %L "%F"%N' -Rhuman/Man.java HumanFactory.nw > human/Man.java
+
+TestHuman.java: HumanFactory.nw
+	notangle -L'//line %L "%F"%N' -RTestHuman.java HumanFactory.nw > TestHuman.java
+@
+
+Kompilera och kör:
+
+<<HumanFactory.mk>>=
+.PHONY: classes-human run-human clean-HumanFactory
+classes-human: human/Human.java human/NonBinary.java human/Woman.java human/Man.java TestHuman.java
+	@if [ -x ./noerr.pl ]; then ./noerr.pl javac human/*.java TestHuman.java; else javac human/*.java TestHuman.java; fi
+
+run-human: classes-human
+	java TestHuman
+@
+
+Städregler:
+
+<<HumanFactory.mk>>=
+clean: clean-HumanFactory
+clean-HumanFactory:
+	rm -f HumanFactory.tex HumanFactory.aux HumanFactory.log HumanFactory.toc
+	rm -f HumanFactory.mk HumanFactory.pdf
+	rm -f human/*.class *.class
+	rm -f TestHuman.java human/*.java
+	rmdir human 2>/dev/null || true
+@
+
+\section{Kod}
+Här följer klasserna i paketet \texttt{human} och testprogrammet. Varje fil
+presenteras med en översikt och därefter delsteg (chunks) i samma stil som i uppgift 1.
+
+\subsection{\texttt{Human} (abstrakt)}
+\noindent \textbf{Ansvar:} bära gemensamma fält (\texttt{name}, \texttt{pnr}) och erbjuda fabriksmetoden.
+
+Filen [[human/Human.java]] ser översiktligt ut så här:
+
+<<human/Human.java>>=
+package human;
+
+public abstract class Human {
+	<<Human fields>>
+	<<Human ctor (package-private)>>
+	<<Human factory>>
+	<<Human methods>>
+}
+@
+
+\subsubsection{Fält}
+Vi lagrar namn och personnummer (oföränderliga efter konstruktion).
+
+<<Human fields>>=
+	protected final String name;
+	protected final String pnr;
+@
+
+\subsubsection{Konstruktor (paket-synlig)}
+Konstruktorn är \emph{paket\-synlig} (ingen modifierare) så att kod utanför
+\texttt{human} inte kan \texttt{new}a \texttt{Human} eller anonym subklass.
+
+<<Human ctor (package-private)>>=
+	Human(String name, String pnr) {
+		if (name == null || name.isBlank()) throw new IllegalArgumentException("name");
+		if (pnr == null || pnr.length() < 2) throw new IllegalArgumentException("pnr");
+		this.name = name;
+		this.pnr = pnr;
+	}
+@
+
+\subsubsection{Fabriksmetod}
+Vi följer uppgiftens tumregel på \emph{näst sista tecknet}:
+\begin{itemize}
+  \item \texttt{'0'} $\Rightarrow$ \texttt{NonBinary}
+  \item udda siffra $\Rightarrow$ \texttt{Man}
+  \item jämn siffra (ej \texttt{'0'}) $\Rightarrow$ \texttt{Woman}
+\end{itemize}
+Vi erbjuder den variant som används i exemplen (\texttt{create(name, pnr)}).
+Vill man, kan man lägga till en \texttt{create(pnr)} som ger ett standardnamn.
+
+<<Human factory>>=
+	public static Human create(String name, String pnr) {
+		if (pnr == null || pnr.length() < 2) throw new IllegalArgumentException("pnr");
+		char c = pnr.charAt(pnr.length() - 2); // näst sista tecknet
+		if (c == '0') {
+			return new NonBinary(name, pnr);
+		}
+		if (!Character.isDigit(c)) {
+			throw new IllegalArgumentException("pnr: näst sista tecknet måste vara siffra eller '0'");
+		}
+		int d = c - '0';
+		if ((d % 2) == 1) {
+			return new Man(name, pnr);
+		} else {
+			return new Woman(name, pnr);
+		}
+	}
+@
+
+\subsubsection{Metoder}
+Vi exponerar namn och pnr. \texttt{toString()} implementeras i subklasserna.
+
+<<Human methods>>=
+	public String getName() { return name; }
+	public String getPnr() { return pnr; }
+	@Override public abstract String toString();
+@
+
+\subsection{\texttt{NonBinary}}
+\noindent \textbf{Ansvar:} konkret \texttt{Human} för icke\-binär. Klassen är \emph{paket\-synlig}
+(ingen \texttt{public}) och \emph{final} så klienten varken kan referera till den
+eller ärva utanför paketet.
+
+Filen [[human/NonBinary.java]] ser ut så här:
+
+<<human/NonBinary.java>>=
+package human;
+
+final class NonBinary extends Human {
+	<<NonBinary ctor>>
+	<<NonBinary toString>>
+}
+@
+
+\subsubsection{Konstruktor}
+Också paket\-synlig (ingen modifierare) — kan inte anropas utanför paketet.
+
+<<NonBinary ctor>>=
+	NonBinary(String name, String pnr) {
+		super(name, pnr);
+	}
+@
+
+\subsubsection{\texttt{toString}}
+<<NonBinary toString>>=
+	@Override
+	public String toString() {
+		return "Jag är icke-binär och heter " + name;
+	}
+@
+
+\subsection{\texttt{Woman}}
+\noindent \textbf{Ansvar:} konkret \texttt{Human} för kvinna. Paket\-synlig och \texttt{final}.
+
+Filen [[human/Woman.java]]:
+
+<<human/Woman.java>>=
+package human;
+
+final class Woman extends Human {
+	<<Woman ctor>>
+	<<Woman toString>>
+}
+@
+
+\subsubsection{Konstruktor}
+<<Woman ctor>>=
+	Woman(String name, String pnr) {
+		super(name, pnr);
+	}
+@
+
+\subsubsection{\texttt{toString}}
+<<Woman toString>>=
+	@Override
+	public String toString() {
+		return "Jag är kvinna och heter " + name;
+	}
+@
+
+\subsection{\texttt{Man}}
+\noindent \textbf{Ansvar:} konkret \texttt{Human} för man. Paket\-synlig och \texttt{final}.
+
+Filen [[human/Man.java]]:
+
+<<human/Man.java>>=
+package human;
+
+final class Man extends Human {
+	<<Man ctor>>
+	<<Man toString>>
+}
+@
+
+\subsubsection{Konstruktor}
+<<Man ctor>>=
+	Man(String name, String pnr) {
+		super(name, pnr);
+	}
+@
+
+\subsubsection{\texttt{toString}}
+<<Man toString>>=
+	@Override
+	public String toString() {
+		return "Jag är man och heter " + name;
+	}
+@
+
+\subsection{\texttt{TestHuman}}
+\noindent \textbf{Ansvar:} visa fabriksanvändning och utskrift. Testprogrammet
+ligger i default\-paketet och kan endast skapa objekt via \texttt{Human.create}.
+
+Filen [[TestHuman.java]] ser översiktligt ut så här:
+
+<<TestHuman.java>>=
+import human.Human;
+
+public class TestHuman {
+	<<TestHuman main>>
+}
+@
+
+\subsubsection{\texttt{main}}
+Vi skapar ett objekt av varje typ via fabriken och skriver ut.
+
+<<TestHuman main>>=
+	public static void main(String[] args) {
+		Human billie = Human.create("Billie", "xxxxxx-560x"); // näst sista = 0 -> NonBinary
+		Human anna   = Human.create("Anna",   "xxxxxx-642x"); // näst sista = 2 -> Woman
+		Human magnus = Human.create("Magnus", "xxxxxx-011x"); // näst sista = 1 -> Man
+
+		System.out.println(billie);
+		System.out.println(anna);
+		System.out.println(magnus);
+
+		// Följande rader ska INTE kompilera (demonstreras separat, inte i detta program):
+		// NonBinary nb = new NonBinary("X", "000000-5600");    // ej synlig utanför paketet
+		// Human h = new Human("X", "000000-5600") {};          // Human() ej synlig + abstrakt
+	}
+@

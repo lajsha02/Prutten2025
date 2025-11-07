@@ -1,5 +1,5 @@
 package quoridor.model;
 
-interface myObserver {
+public interface myObserver {
   void update();
 }

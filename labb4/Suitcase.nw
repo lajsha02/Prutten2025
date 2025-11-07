@@ -1,0 +1,364 @@
+\title{Resväska som \emph{Composite} i Java}
+\author{Lisa Dahl och Mostafa Shihadeh}
+
+\maketitle
+\tableofcontents
+
+\section{Introduktion}
+Vi vill implementera uppgift 1 (resväska enligt \emph{Composite}-mönstret)
+med litterär programmering.
+Vi bygger tre klasser: \texttt{Component} (abstrakt), \texttt{Leaf} (pryl) och
+\texttt{Composite} (behållare), samt ett testprogram \texttt{Client}.
+
+\subsection{Designval}
+\begin{itemize}
+  \item \texttt{Component} bär gemensamma attribut: \texttt{name} och \texttt{weight} (egen vikt).
+  \item \texttt{Leaf} representerar en enskild pryl. \texttt{getWeight()} returnerar bara dess egen vikt.
+  \item \texttt{Composite} representerar en behållare med barn. \texttt{getWeight()} summerar
+        behållarens egen vikt och alla barns vikter. \texttt{toString()} traverserar rekursivt.
+  \item Metoderna \texttt{add} och \texttt{remove} finns bara i \texttt{Composite} (inte i \texttt{Component}).
+\end{itemize}
+
+\subsection{Bygga och kompilera}
+Vi vill skriva en byggfil för GNU Make. Själva, maskin-genererade reglerna
+läggs i \texttt{Suitcase.mk} som tanglas ur denna \texttt{.nw}-fil och sedan
+\emph{inkluderas} från toppens \texttt{Makefile}.
+
+Först lägger vi grundmålen och PDF-reglerna:
+
+<<Suitcase.mk>>=
+TARGETS= Suitcase.pdf Suitcase.mk
+all: classes Suitcase.pdf
+
+Suitcase.pdf:  Suitcase.tex
+	pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
+	pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
+
+Suitcase.tex: Suitcase.nw
+	noweave -latex Suitcase.nw > Suitcase.tex
+@
+
+Därefter tanglar vi ut varje \texttt{.java}-fil ur den litterära källan
+(samt bäddar in radmarkörer så att \texttt{noerr.pl} kan mappa fel till \texttt{.nw}):
+
+<<Suitcase.mk>>=
+Component.java: Suitcase.nw
+	notangle -L'//line %L "%F"%N' -RComponent.java Suitcase.nw > Component.java
+
+Leaf.java: Suitcase.nw
+	notangle -L'//line %L "%F"%N' -RLeaf.java Suitcase.nw > Leaf.java
+
+Composite.java: Suitcase.nw
+	notangle -L'//line %L "%F"%N' -RComposite.java Suitcase.nw > Composite.java
+
+Client.java: Suitcase.nw
+	notangle -L'//line %L "%F"%N' -RClient.java Suitcase.nw > Client.java
+@
+
+Nu lägger vi sektionen för att kompilera och köra Java:
+
+<<Suitcase.mk>>=
+.PHONY: classes run clean-Suitcase
+classes: Component.java Leaf.java Composite.java Client.java
+	@if [ -x ./noerr.pl ]; then ./noerr.pl javac *.java; else javac *.java; fi
+
+run: classes
+	java Client
+@
+
+Slutligen städreglerna:
+
+<<Suitcase.mk>>=
+clean: clean-Suitcase
+clean-Suitcase:
+	rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
+	rm -f Suitcase.mk Suitcase.pdf
+	rm -f *.class *.java
+@
+
+\section{Kod}
+I det här avsnittet definierar vi de fyra Javafilerna som tänglas ut från denna \texttt{.nw}-fil.
+
+\subsection{\texttt{Klassen Component}}
+\noindent \textbf{Ansvar:} bas-klass med namn och egenvikt samt abstrakta metoder.
+
+Filen [[Component.java]] innehåller definitionen av klassen \texttt{Component}.
+Översiktligt ser den ut så här:
+<<Component.java>>=
+public abstract class Component {
+  <<Component attributes>>
+  <<Component constructor>>
+  <<Component methods>>
+}
+@
+
+\section{Konstruktor}
+Vi skapar en konstruktor för klassen \texttt{Konstruktor} som initierar alla 
+attribut. Vi vill kunna skapa en behållare med ett namn och en vikt.
+
+Vi vill att klassen \texttt{Component} ska ha följande attribut:
+\begin{itemize}
+  \item \texttt{name}: namn på komponenten (sträng)
+  \item \texttt{weight}: egen vikt i kg (flyttal)
+\end{itemize}
+
+Dessa attribut ska vara skyddade och slutgiltiga (protected final) för att förhindra
+ändring efter konstruktion.
+
+<<Component attributes>>=
+  protected final String name;
+  protected final double weight; 
+@
+I konstruktorn lägger vi till kontroller för att säkerställa att
+namnet inte är null eller tomt, och att vikten är icke-negativ.
+
+<<Component constructor>>=
+protected Component(String name, double weight) {
+    if (name == null || name.isBlank()) throw new IllegalArgumentException("name");
+    if (weight < 0) throw new IllegalArgumentException("weight");
+    this.name = name;
+    this.weight = weight;
+  }
+@
+\section{Metoder}
+Vi definierar metoderna \texttt{getName}, \texttt{getOwnWeight} i klassen \texttt{Component}, samt de abstrakta metoderna \texttt{getWeight} och \texttt{toString}.:
+\begin{itemize}
+  \item \texttt{getName}: returnerar komponentens namn.
+  \item \texttt{getOwnWeight}: returnerar komponentens egen vikt (utan barn).
+  \item \texttt{getWeight}: abstrakt metod som ska returnera totalvikten (inklusive barn).
+  \item \texttt{toString}: abstrakt metod som ska returnera en strängrepresentation av komponenten.
+\end{itemize}
+
+<<Component methods>>=
+  public String getName() { return name; }
+  public double getOwnWeight() { return weight; }
+  public abstract double getWeight();
+  public abstract String toString();
+@
+
+\subsection{\texttt{Leaf}}
+\noindent \textbf{Ansvar:} en enskild pryl att packa.
+
+Filen [[Leaf.java]] innehåller definitionen av klassen \texttt{Leaf}.
+Översiktligt ser den ut så här:
+
+<<Leaf.java>>=
+public class Leaf extends Component {
+  <<Leaf constructor>>
+  <<Leaf methods>>
+}
+@
+
+\subsubsection{Konstruktor}
+Konstruktorn tar namn och egen vikt och skickar vidare till basklassen \texttt{Component}.
+
+<<Leaf constructor>>=
+  public Leaf(String name, double weight) {
+    super(name, weight);
+  }
+@
+
+\subsubsection{Metoder}
+Totalvikten för ett löv är samma som dess egen vikt. \texttt{toString} beskriver prylen.
+
+<<Leaf methods>>=
+  @Override
+  public double getWeight() {
+    return this.weight;
+  }
+
+  @Override
+  public String toString() {
+    return this.name + " (" + this.weight + " kg)";
+  }
+@
+
+\subsection{\texttt{Composite}}
+\noindent \textbf{Ansvar:} en behållare som kan innehålla andra \texttt{Component}.
+Egen vikt \emph{plus} alla barns vikter utgör totalvikten.
+
+Filen [[Composite.java]] innehåller definitionen av klassen \texttt{Composite}.
+Översiktligt ser den ut så här:
+
+<<Composite.java>>=
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Composite extends Component {
+  <<Composite fields>>
+  <<Composite constructor>>
+  <<Composite child-management>>
+  <<Composite weight>>
+  <<Composite toString>>
+}
+@
+
+\subsubsection{Fält}
+Vi lagrar barn i en muterbar lista, men exponerar en oföränderlig vy utåt.
+
+<<Composite fields>>=
+  private final List<Component> children = new ArrayList<>();
+@
+
+\subsubsection{Konstruktor}
+Konstruktorn tar behållarens namn och egen vikt.
+
+<<Composite constructor>>=
+  public Composite(String name, double ownWeight) {
+    super(name, ownWeight);
+  }
+@
+
+\subsubsection{Barnhantering (\texttt{add}/\texttt{remove}/\texttt{getChildren})}
+Vi kan lägga till och ta bort barn, och ge tillbaka en oföränderlig vy av listan.
+
+<<Composite child-management>>=
+  public void add(Component c) {
+    if (c == null) throw new IllegalArgumentException("child");
+    children.add(c);
+  }
+
+  public void remove(Component c) {
+    children.remove(c);
+  }
+
+  public List<Component> getChildren() {
+    return Collections.unmodifiableList(children);
+  }
+@
+
+\subsubsection{Totalvikt (\texttt{getWeight})}
+Totalvikt = egen vikt + summan av alla barns totalvikter (rekursivt).
+
+<<Composite weight>>=
+  @Override
+  public double getWeight() {
+    double sum = this.weight;
+    for (Component c : children) {
+      sum += c.getWeight();
+    }
+    return sum;
+  }
+@
+
+\subsubsection{\texttt{toString}}
+Vi bygger en rekursiv beskrivning där barn listas inom hakparenteser.
+
+<<Composite toString>>=
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(this.name).append(" (").append(this.weight).append(" kg) [");
+    for (int i = 0; i < children.size(); i++) {
+      sb.append(children.get(i).toString());
+      if (i < children.size() - 1) sb.append(", ");
+    }
+    sb.append("]");
+    return sb.toString();
+  }
+@
+\subsection{\texttt{Client}}
+\noindent \textbf{Ansvar:} bygga en resväska med minst tre nivåer och minst tio prylar,
+skriva ut totalvikt och innehåll, ta bort några objekt och skriva ut igen.
+
+Filen [[Client.java]] innehåller testprogrammet. Översiktligt ser det ut så här:
+
+<<Client.java>>=
+public class Client {
+  public static void main(String[] args) {
+    <<Client build-structure>>
+    <<Client print-before>>
+    <<Client removals>>
+    <<Client print-after>>
+  }
+}
+@
+
+\subsubsection{Bygg upp strukturen (\texttt{suitcase})}
+Vi skapar roten (resväskan), underbehållare och löv.
+
+<<Client build-structure>>=
+    // Roten: själva resväskan (egen vikt 2.3 kg)
+    Composite suitcase = new Composite("Resväska", 2.3);
+
+    // Större plagg (löven)
+    Leaf tshirt1 = new Leaf("T-shirt vit", 0.18);
+    Leaf tshirt2 = new Leaf("T-shirt svart", 0.19);
+    Leaf jeans   = new Leaf("Jeans", 0.75);
+    Leaf chinos  = new Leaf("Chinos", 0.55);
+    Leaf bok     = new Leaf("Pocketbok", 0.28);
+
+    // Necessär (behållare) med egen vikt 0.12 kg och innehåll
+    Composite necessar = new Composite("Necessär", 0.12);
+    Leaf tvål     = new Leaf("Tvål", 0.09);
+    Leaf schampo  = new Leaf("Schampo", 0.22);
+    Leaf borste   = new Leaf("Tandborste", 0.03);
+    Leaf tandkräm = new Leaf("Tandkräm", 0.11);
+    necessar.add(tvål);
+    necessar.add(schampo);
+    necessar.add(borste);
+    necessar.add(tandkräm);
+
+    // Påse i necessären (tredje nivån)
+    Composite påse = new Composite("Påse", 0.01);
+    Leaf hårspännen = new Leaf("Hårspännen (10 st)", 0.02);
+    påse.add(hårspännen);
+    necessar.add(påse);
+
+    // Mindre väska för elektronik (behållare) — nivå två
+    Composite techbag = new Composite("Tech-väska", 0.20);
+    Leaf laddare  = new Leaf("Laddare", 0.15);
+    Leaf hörlurar = new Leaf("Hörlurar", 0.08);
+    Leaf powerbank = new Leaf("Powerbank", 0.18);
+    techbag.add(laddare);
+    techbag.add(hörlurar);
+    techbag.add(powerbank);
+
+    // Packa allt i resväskan
+    suitcase.add(tshirt1);
+    suitcase.add(tshirt2);
+    suitcase.add(jeans);
+    suitcase.add(chinos);
+    suitcase.add(bok);
+    suitcase.add(necessar);
+    suitcase.add(techbag);
+@
+
+\subsubsection{Skriv ut totalvikt och innehåll (före borttagning)}
+<<Client print-before>>=
+    System.out.printf("Totalvikt före borttagning: %.2f kg%n", suitcase.getWeight());
+    System.out.println("Innehåll före borttagning:");
+    System.out.println(suitcase.toString());
+@
+
+\subsubsection{Ta bort några saker/behållare}
+Vi tar bort en pryl i en behållare, hela teknikväskan och påsen i necessären.
+
+<<Client removals>>=
+    techbag.remove(powerbank);      // ta bort en pryl i behållare
+    suitcase.remove(techbag);       // ta bort hela behållaren
+    necessar.remove(påse);          // ta bort tredje nivåns behållare
+@
+
+\subsubsection{Skriv ut totalvikt och innehåll (efter borttagning)}
+<<Client print-after>>=
+    System.out.printf("Totalvikt efter borttagning: %.2f kg%n", suitcase.getWeight());
+    System.out.println("Innehåll efter borttagning:");
+    System.out.println(suitcase.toString());
+@
+
+
+\section{Kommentarer om korrekthet och mönstertrohet}
+\begin{itemize}
+  \item \texttt{getWeight()} anropat på ett \texttt{Composite}-objekt itererar rekursivt över alla barn
+        (och deras barn), vilket följer \emph{Composite}-mönstrets idé.
+  \item \texttt{toString()} på \texttt{Composite} bygger en rekursiv presentation av hela trädet.
+  \item \texttt{Leaf} saknar \texttt{add}/\texttt{remove} och är därmed ett \emph{löv}.
+  \item Egen vikt för behållare ingår alltid i totalvikten, som efterfrågats i labbtexten.
+\end{itemize}
+
+\section{Bygginstruktion}
+Kör \texttt{make} för att generera \texttt{Suitcase.pdf} och \texttt{Suitcase.mk}.
+Kör \texttt{make classes} för att kompilera Javafilerna och \texttt{make run}
+för att köra demon av \texttt{Client}.

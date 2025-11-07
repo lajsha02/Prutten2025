@@ -11,7 +11,7 @@ public class MainObserver {
 
     model.addObserver(view);
 
-    // samma controller som förut – nu räcker det att controller kör drag på modellen
+    // Controller kör drag på modellen
     new QuoridorControl(model, view).run();
   }
 }

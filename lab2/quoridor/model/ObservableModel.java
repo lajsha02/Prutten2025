@@ -23,9 +23,9 @@ public class ObservableModel extends QuoridorModel implements myObservable {
   
   @Override
     public void movePlayer(BoardState s, int player, int toR, int toC) {
-        BoardState before = this.boardState;   // spara referensen före
-        super.movePlayer(s, player, toR, toC); // låt bas-klassen göra jobbet
-        if (this.boardState != before) {       // ändrades state? (ny instans)
+        BoardState before = this.boardState;   // referensen före
+        super.movePlayer(s, player, toR, toC); // bas-klassen gör jobbet
+        if (this.boardState != before) {       // ändrades state så gör vi ny instans
             notifyObservers();
         }
     }
