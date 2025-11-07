@@ -5,12 +5,20 @@
 \tableofcontents
 
 \section{Introduktion}
-Vi implementerar uppgift 1 (resväska enligt \emph{Composite}-mönstret)
-med litterär programmering. Vi bygger tre klasser:
+Vi bygger en resväska som består av saker i ett träd: en sak kan antingen vara en pryl eller
+en mindre väska som i sin tur innehåller fler saker.
+Med Iterator gör vi det lätt att gå igenom allt innehåll steg för steg.
+Tanken är att klientkoden bara ska kunna “loopa” över sakerna som om det vore en vanlig lista.
+Vi bygger tre klasser:
 \texttt{Component} (abstrakt), \texttt{Leaf} (pryl) och
 \texttt{Composite} (behållare), samt ett testprogram \texttt{Client}.
 I X4 lägger vi till två iteratorer (bredden-först och preorder) och gör
 \texttt{Composite} itererbar.
+
+Vi visar två sätt att gå igenom innehållet:
+
+\item\texttt{Bredden först (BFS):} först roten, sedan alla barn, sedan barnbarn osv.
+\item\\texttt{Preorder (DFS):} besök en nod, gå sedan ner i dess barn innan du går vidare.
 
 \subsection{Designval}
 \begin{itemize}
