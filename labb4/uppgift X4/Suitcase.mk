@@ -18,6 +18,7 @@ Composite.java: Suitcase.nw
 
 Client.java: Suitcase.nw
 	notangle -L'//line %L "%F"%N' -RClient.java Suitcase.nw > Client.java
+
 BreadthFirstIterator.java: Suitcase.nw
 	notangle -L'//line %L "%F"%N' -RBreadthFirstIterator.java Suitcase.nw > BreadthFirstIterator.java
 
