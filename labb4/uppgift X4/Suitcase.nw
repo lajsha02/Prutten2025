@@ -91,7 +91,6 @@ Vi tar bort genererade filer.
 clean: clean-Suitcase
 clean-Suitcase:
   rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
-  rm -f Suitcase.mk Suitcase.pdf
   rm -f *.class *.java
 @
 
