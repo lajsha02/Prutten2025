@@ -1,21 +1,21 @@
-//line 164 "Suitcase.nw"
+//line 145 "Suitcase.nw"
 public class Leaf extends Component {
   
-//line 174 "Suitcase.nw"
+//line 155 "Suitcase.nw"
   public Leaf(String name, double weight) {
     super(name, weight);
   }
-//line 166 "Suitcase.nw"
+//line 147 "Suitcase.nw"
   
-//line 183 "Suitcase.nw"
+//line 164 "Suitcase.nw"
   @Override
   public double getWeight() {
-    return getOwnWeight();
+    return this.weight;
   }
 
   @Override
   public String toString() {
-    return getName() + " (" + getOwnWeight() + ")";
+    return this.name + " (" + this.weight + " kg)";
   }
-//line 167 "Suitcase.nw"
+//line 148 "Suitcase.nw"
 }

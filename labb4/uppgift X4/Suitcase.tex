@@ -5,34 +5,30 @@
 \tableofcontents
 
 \section{Introduktion}
-Vi bygger en resväska som består av saker i ett träd: en sak kan antingen vara en pryl eller
-en mindre väska som i sin tur innehåller fler saker.
-Med Iterator gör vi det lätt att gå igenom allt innehåll steg för steg.
-Tanken är att klientkoden bara ska kunna “loopa” över sakerna som om det vore en vanlig lista.
-Vi bygger tre klasser:
-\texttt{Component} (abstrakt), \texttt{Leaf} (pryl) och
+Vi vill implementera uppgift 1 (resväska enligt \emph{Composite}-mönstret)
+med litterär programmering.
+Vi bygger tre klasser: \texttt{Component} (abstrakt), \texttt{Leaf} (pryl) och
 \texttt{Composite} (behållare), samt ett testprogram \texttt{Client}.
-I X4 lägger vi till två iteratorer (bredden-först och preorder) och gör
-\texttt{Composite} itererbar.
 
-Vi visar två sätt att gå igenom innehållet:
-
-\begin{itemize}
-\item\texttt{Bredden först (BFS):} först roten, sedan alla barn, sedan barnbarn osv.
-\item\texttt{Preorder (DFS):} besök en nod, gå sedan ner i dess barn innan du går vidare.
-\end{itemize}
+I extrauppgiften X4 lägger vi även till två iteratorer för vår Composite-struktur:
+en som går \emph{bredden-först} (BFS) och en som går \emph{preorder} (djupet-först).
+Då kan vi gå igenom alla noder med en for-each-sats eller med iteratorns 
+\texttt{hasNext}/\texttt{next}-metoder utan att bry oss om hur trädet är uppbyggt.
 
 \subsection{Designval}
 \begin{itemize}
   \item \texttt{Component} bär gemensamma attribut: \texttt{name} och \texttt{weight} (egen vikt).
+        Dessa lagras som \emph{private final}-fält och kan läsas via getters.
   \item \texttt{Leaf} representerar en enskild pryl. \texttt{getWeight()} returnerar bara dess egen vikt.
   \item \texttt{Composite} representerar en behållare med barn. \texttt{getWeight()} summerar
         behållarens egen vikt och alla barns vikter. \texttt{toString()} traverserar rekursivt.
-  \item Metoderna \texttt{add}/\texttt{remove} finns bara i \texttt{Composite} (inte i \texttt{Component}).
+  \item Metoderna \texttt{add} och \texttt{remove} finns bara i \texttt{Composite} (inte i \texttt{Component}).
+  \item I X4 låter vi \texttt{Composite} implementera \texttt{Iterable<Component>} och skriver
+        två iterator-klasser: \texttt{BreadthFirstIterator} (BFS) och \texttt{PreorderIterator} (DFS).
 \end{itemize}
 
 \subsection{Bygga och kompilera}
-Vi vill skriva en byggfil för GNU Make. Själva, maskin-genererade reglerna
+Vi vill skriva en byggfil för GNU Make. De maskin-genererade reglerna
 läggs i \texttt{Suitcase.mk} som tanglas ur denna \texttt{.nw}-fil och sedan
 \emph{inkluderas} från toppens \texttt{Makefile}.
 
@@ -43,11 +39,11 @@ TARGETS= Suitcase.pdf Suitcase.mk
 all: classes Suitcase.pdf
 
 Suitcase.pdf:  Suitcase.tex
-        pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
-        pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
+  pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
+  pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
 
 Suitcase.tex: Suitcase.nw
-        noweave -latex Suitcase.nw > Suitcase.tex
+  noweave -latex Suitcase.nw > Suitcase.tex
 \nwendcode{}\nwbegindocs{2}\nwdocspar
 
 Därefter tanglar vi ut varje \texttt{.java}-fil ur den litterära källan
@@ -55,22 +51,22 @@ Därefter tanglar vi ut varje \texttt{.java}-fil ur den litterära källan
 
 \nwenddocs{}\nwbegincode{3}\moddef{Suitcase.mk}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 Component.java: Suitcase.nw
-        notangle -L'//line %L "%F"%N' -RComponent.java Suitcase.nw > Component.java
+  notangle -L'//line %L "%F"%N' -RComponent.java Suitcase.nw > Component.java
 
 Leaf.java: Suitcase.nw
-        notangle -L'//line %L "%F"%N' -RLeaf.java Suitcase.nw > Leaf.java
+  notangle -L'//line %L "%F"%N' -RLeaf.java Suitcase.nw > Leaf.java
 
 Composite.java: Suitcase.nw
-        notangle -L'//line %L "%F"%N' -RComposite.java Suitcase.nw > Composite.java
+  notangle -L'//line %L "%F"%N' -RComposite.java Suitcase.nw > Composite.java
 
 Client.java: Suitcase.nw
-        notangle -L'//line %L "%F"%N' -RClient.java Suitcase.nw > Client.java
+  notangle -L'//line %L "%F"%N' -RClient.java Suitcase.nw > Client.java
 
 BreadthFirstIterator.java: Suitcase.nw
-        notangle -L'//line %L "%F"%N' -RBreadthFirstIterator.java Suitcase.nw > BreadthFirstIterator.java
+  notangle -L'//line %L "%F"%N' -RBreadthFirstIterator.java Suitcase.nw > BreadthFirstIterator.java
 
 PreorderIterator.java: Suitcase.nw
-        notangle -L'//line %L "%F"%N' -RPreorderIterator.java Suitcase.nw > PreorderIterator.java
+  notangle -L'//line %L "%F"%N' -RPreorderIterator.java Suitcase.nw > PreorderIterator.java
 \nwendcode{}\nwbegindocs{4}\nwdocspar
 
 Nu lägger vi sektionen för att kompilera och köra Java:
@@ -78,10 +74,10 @@ Nu lägger vi sektionen för att kompilera och köra Java:
 \nwenddocs{}\nwbegincode{5}\moddef{Suitcase.mk}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 .PHONY: classes run clean-Suitcase
 classes: Component.java Leaf.java Composite.java Client.java BreadthFirstIterator.java PreorderIterator.java
-        @if [ -x ./noerr.pl ]; then ./noerr.pl javac *.java; else javac *.java; fi
+  @if [ -x ./noerr.pl ]; then ./noerr.pl javac *.java; else javac *.java; fi
 
 run: classes
-        java Client
+  java Client
 \nwendcode{}\nwbegindocs{6}\nwdocspar
 
 Slutligen städreglerna:
@@ -89,18 +85,18 @@ Slutligen städreglerna:
 \nwenddocs{}\nwbegincode{7}\moddef{Suitcase.mk}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 clean: clean-Suitcase
 clean-Suitcase:
-        rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
-        rm -f *.class *.java
+  rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
+  rm -f *.class *.java
 \nwendcode{}\nwbegindocs{8}\nwdocspar
 
 \section{Kod}
-I detta avsnitt definierar vi Javafilerna som tänglas ut.
+I det här avsnittet definierar vi Javafilerna som tänglas ut från denna \texttt{.nw}-fil.
 
-\subsection{\texttt{Component} (abstrakt)}
+\subsection{\texttt{Klassen Component}}
 \noindent \textbf{Ansvar:} bas-klass med namn och egenvikt samt abstrakta metoder.
 
-Filen {\Tt{}Component.java\nwendquote} ser översiktligt ut så här:
-
+Filen {\Tt{}Component.java\nwendquote} innehåller definitionen av klassen \texttt{Component}.
+Översiktligt ser den ut så här:
 \nwenddocs{}\nwbegincode{9}\moddef{Component.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 public abstract class Component \{
   \LA{}Component attributes\RA{}
@@ -115,40 +111,54 @@ Vi vill att \texttt{Component} ska ha följande attribut:
   \item \texttt{name}: namn på komponenten (sträng)
   \item \texttt{weight}: egen vikt i kg (flyttal)
 \end{itemize}
-Dessa är \emph{protected final}.
+
+Dessa attribut ska inte kunna ändras efter att objektet skapats. 
+Vi markerar dem därför som \texttt{private final} och ger enkla getters.
 
 \nwenddocs{}\nwbegincode{11}\moddef{Component attributes}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-  protected final String name;
-  protected final double weight;
+  private final String name;
+  private final double weight;
 \nwendcode{}\nwbegindocs{12}\nwdocspar
 
 \subsubsection{Konstruktor}
-Vi kontrollerar att namnet inte är tomt och att vikten är icke-negativ.
+Konstruktorn tar emot namn och vikt och lagrar dem.
 
 \nwenddocs{}\nwbegincode{13}\moddef{Component constructor}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-  protected Component(String name, double weight) \{
-    if (name == null || name.isBlank()) throw new IllegalArgumentException("name");
-    if (weight < 0) throw new IllegalArgumentException("weight");
+  Component(String name, double weight) \{
     this.name = name;
     this.weight = weight;
   \}
 \nwendcode{}\nwbegindocs{14}\nwdocspar
 
 \subsubsection{Metoder}
-Vi exponerar \texttt{getName} och \texttt{getOwnWeight}. De abstrakta metoderna
-\texttt{getWeight} och \texttt{toString} implementeras i subklasser.
+I \texttt{Component} deklarerar vi getters för namnet och egenvikten, samt de
+abstrakta metoderna \texttt{getWeight} och \texttt{toString} som alla 
+subklasser måste implementera:
+\begin{itemize}
+  \item \texttt{getName}: returnerar komponentens namn.
+  \item \texttt{getOwnWeight}: returnerar komponentens egen vikt (utan barn).
+  \item \texttt{getWeight}: ska returnera totalvikten (inklusive barns vikt).
+  \item \texttt{toString}: ska returnera en strängrepresentation av komponenten.
+\end{itemize}
 
 \nwenddocs{}\nwbegincode{15}\moddef{Component methods}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-  public String getName() \{ return name; \}
-  public double getOwnWeight() \{ return weight; \}
+  public String getName() \{
+    return name;
+  \}
+
+  public double getOwnWeight() \{
+    return weight;
+  \}
+
   public abstract double getWeight();
-  @Override public abstract String toString();
+  public abstract String toString();
 \nwendcode{}\nwbegindocs{16}\nwdocspar
 
 \subsection{\texttt{Leaf}}
 \noindent \textbf{Ansvar:} en enskild pryl att packa.
 
-Filen {\Tt{}Leaf.java\nwendquote} ser översiktligt ut så här:
+Filen {\Tt{}Leaf.java\nwendquote} innehåller definitionen av klassen \texttt{Leaf}.
+Översiktligt ser den ut så här:
 
 \nwenddocs{}\nwbegincode{17}\moddef{Leaf.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 public class Leaf extends Component \{
@@ -158,7 +168,7 @@ public class Leaf extends Component \{
 \nwendcode{}\nwbegindocs{18}\nwdocspar
 
 \subsubsection{Konstruktor}
-Konstruktorn tar namn och egen vikt och skickar vidare till \texttt{Component}.
+Konstruktorn tar namn och egen vikt och skickar vidare till basklassen \texttt{Component}.
 
 \nwenddocs{}\nwbegincode{19}\moddef{Leaf constructor}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   public Leaf(String name, double weight) \{
@@ -172,40 +182,36 @@ Totalvikten för ett löv är samma som dess egen vikt. \texttt{toString} beskri
 \nwenddocs{}\nwbegincode{21}\moddef{Leaf methods}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public double getWeight() \{
-    return this.weight;
+    return getOwnWeight();
   \}
 
   @Override
   public String toString() \{
-    return this.name + " (" + this.weight + " kg)";
+    return getName() + " (" + getOwnWeight() + ")";
   \}
 \nwendcode{}\nwbegindocs{22}\nwdocspar
 
 \subsection{\texttt{Composite}}
 \noindent \textbf{Ansvar:} en behållare som kan innehålla andra \texttt{Component}.
-Egen vikt \emph{plus} alla barns vikter utgör totalvikten. I X4 gör vi den även
-\emph{itererbar} så att for-each fungerar (default: BFS).
+Egen vikt \emph{plus} alla barns vikter utgör totalvikten. I X4 gör vi den också
+itererbar så att vi kan gå igenom trädet med iteratorer.
 
-Filen {\Tt{}Composite.java\nwendquote} ser översiktligt ut så här:
+Filen {\Tt{}Composite.java\nwendquote} innehåller definitionen av klassen \texttt{Composite}.
+Översiktligt ser den ut så här:
 
 \nwenddocs{}\nwbegincode{23}\moddef{Composite.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Composite extends Component implements Iterable<Component> \{
   \LA{}Composite fields\RA{}
   \LA{}Composite constructor\RA{}
-  \LA{}Composite child-management\RA{}
-  \LA{}Composite weight\RA{}
-  \LA{}Composite toString\RA{}
-  \LA{}Composite iterability\RA{}
+  \LA{}Composite methods\RA{}
+  \LA{}Composite iterator methods\RA{}
 \}
 \nwendcode{}\nwbegindocs{24}\nwdocspar
 
 \subsubsection{Fält}
-Vi lagrar barn i en muterbar lista, men exponerar en oföränderlig vy utåt.
+Vi lagrar barn i en muterbar lista av \texttt{Component}.
 
 \nwenddocs{}\nwbegincode{25}\moddef{Composite fields}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   private final List<Component> children = new ArrayList<>();
@@ -215,22 +221,26 @@ Vi lagrar barn i en muterbar lista, men exponerar en oföränderlig vy utåt.
 Konstruktorn tar behållarens namn och egen vikt.
 
 \nwenddocs{}\nwbegincode{27}\moddef{Composite constructor}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-  public Composite(String name, double ownWeight) \{
-    super(name, ownWeight);
+  public Composite(String name, double weight) \{
+    super(name, weight);
   \}
 \nwendcode{}\nwbegindocs{28}\nwdocspar
 
-\subsubsection{Barnhantering (\texttt{add}/\texttt{remove}/\texttt{getChildren})}
-Vi kan lägga till och ta bort barn, och ge tillbaka en oföränderlig vy av listan.
+\subsubsection{Metoder}
+\paragraph{Barnhantering (\texttt{add}/\texttt{remove}/\texttt{getChild}/\texttt{getChildren})}
+Vi kan lägga till och ta bort barn, och hämta ett barn via index eller läsa alla barn.
 
-\nwenddocs{}\nwbegincode{29}\moddef{Composite child-management}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-  public void add(Component c) \{
-    if (c == null) throw new IllegalArgumentException("child");
-    children.add(c);
+\nwenddocs{}\nwbegincode{29}\moddef{Composite methods}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  public void add(Component component) \{
+    children.add(component);
   \}
 
-  public void remove(Component c) \{
-    children.remove(c);
+  public void remove(Component component) \{
+    children.remove(component);
+  \}
+
+  public Component getChild(int index) \{
+    return children.get(index);
   \}
 
   public List<Component> getChildren() \{
@@ -238,44 +248,52 @@ Vi kan lägga till och ta bort barn, och ge tillbaka en oföränderlig vy av lis
   \}
 \nwendcode{}\nwbegindocs{30}\nwdocspar
 
-\subsubsection{Totalvikt (\texttt{getWeight})}
-Totalvikt = egen vikt + summan av alla barns totalvikter (rekursivt).
+\paragraph{Totalvikt (\texttt{getWeight})}
+Totalvikt = behållarens egen vikt + summan av alla barns totalvikter (rekursivt).
+Varje anrop på ett \texttt{Composite}-objekt går igenom dess barn och anropar
+deras \texttt{getWeight()} enligt mönstret.
 
-\nwenddocs{}\nwbegincode{31}\moddef{Composite weight}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{31}\moddef{Composite methods}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public double getWeight() \{
-    double sum = this.weight;
-    for (Component c : children) \{
-      sum += c.getWeight();
+    double totalWeight = getOwnWeight();
+    for (Component child : children) \{
+      totalWeight += child.getWeight();
     \}
-    return sum;
+    return totalWeight;
   \}
 \nwendcode{}\nwbegindocs{32}\nwdocspar
 
-\subsubsection{\texttt{toString}}
-Vi bygger en rekursiv beskrivning där barn listas inom hakparenteser.
+\paragraph{\texttt{toString}}
+Vi bygger en rekursiv beskrivning där behållarens namn och egen vikt visas,
+och alla barn listas inom hakparenteser. Även här anropar vi barnens 
+\texttt{toString()} enligt mönstret.
 
-\nwenddocs{}\nwbegincode{33}\moddef{Composite toString}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{33}\moddef{Composite methods}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public String toString() \{
     StringBuilder sb = new StringBuilder();
-    sb.append(this.name).append(" (").append(this.weight).append(" kg) [");
+    sb.append(getName()).append(" (").append(getOwnWeight()).append(") [");
     for (int i = 0; i < children.size(); i++) \{
       sb.append(children.get(i).toString());
-      if (i < children.size() - 1) sb.append(", ");
+      if (i < children.size() - 1) \{
+        sb.append(", ");
+      \}
     \}
     sb.append("]");
+
     return sb.toString();
   \}
 \nwendcode{}\nwbegindocs{34}\nwdocspar
 
-\subsubsection{Itererbarhet (X4)}
-Vi gör \texttt{Composite} \texttt{Iterable<Component>}. Default\-iteratorn är BFS.
-Vi lägger även metoder för explicit BFS respektive preorder.
+\paragraph{Iterator-metoder (X4)}
+\texttt{Composite} implementerar \texttt{Iterable<Component>}. Default\-iteratorn
+är bredden-först. Vi lägger också till metoder för att uttryckligen få BFS respektive preorder.
 
-\nwenddocs{}\nwbegincode{35}\moddef{Composite iterability}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{35}\moddef{Composite iterator methods}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public Iterator<Component> iterator() \{
+    // default: bredden-först
     return new BreadthFirstIterator(this);
   \}
 
@@ -289,9 +307,10 @@ Vi lägger även metoder för explicit BFS respektive preorder.
 \nwendcode{}\nwbegindocs{36}\nwdocspar
 
 \subsection{\texttt{BreadthFirstIterator} (X4)}
-\noindent \textbf{Ansvar:} leverera noder i bredden-först-ordning (rot, alla barn, barnbarn, \ldots).
+\noindent \textbf{Ansvar:} gå igenom trädet i bredden-först-ordning:
+rot, alla barn, alla barnbarn, osv.
 
-Filen {\Tt{}BreadthFirstIterator.java\nwendquote} ser översiktligt ut så här:
+Filen {\Tt{}BreadthFirstIterator.java\nwendquote} innehåller iteratorn:
 
 \nwenddocs{}\nwbegincode{37}\moddef{BreadthFirstIterator.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 import java.util.ArrayDeque;
@@ -300,46 +319,23 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class BreadthFirstIterator implements Iterator<Component> \{
-  \LA{}BFS fields\RA{}
-  \LA{}BFS ctor\RA{}
-  \LA{}BFS hasNext\RA{}
-  \LA{}BFS next\RA{}
-  \LA{}BFS remove\RA{}
-\}
-\nwendcode{}\nwbegindocs{38}\nwdocspar
-
-\subsubsection{Fält}
-Vi använder en kö (\texttt{ArrayDeque}) av \texttt{Component}.
-
-\nwenddocs{}\nwbegincode{39}\moddef{BFS fields}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   private final Deque<Component> queue = new ArrayDeque<>();
-\nwendcode{}\nwbegindocs{40}\nwdocspar
 
-\subsubsection{Konstruktor}
-Vi startar med roten.
-
-\nwenddocs{}\nwbegincode{41}\moddef{BFS ctor}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  // starta med roten i kön
   public BreadthFirstIterator(Component root) \{
-    if (root == null) throw new IllegalArgumentException("root");
     queue.add(root);
   \}
-\nwendcode{}\nwbegindocs{42}\nwdocspar
 
-\subsubsection{\texttt{hasNext}}
-\nwenddocs{}\nwbegincode{43}\moddef{BFS hasNext}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public boolean hasNext() \{
     return !queue.isEmpty();
   \}
-\nwendcode{}\nwbegindocs{44}\nwdocspar
 
-\subsubsection{\texttt{next}}
-Om elementet är \texttt{Composite}, läggs dess barn sist i kön.
-
-\nwenddocs{}\nwbegincode{45}\moddef{BFS next}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public Component next() \{
-    if (queue.isEmpty()) throw new NoSuchElementException();
+    if (!hasNext()) \{
+      throw new NoSuchElementException();
+    \}
     Component current = queue.removeFirst();
     if (current instanceof Composite) \{
       for (Component child : ((Composite) current).getChildren()) \{
@@ -348,24 +344,21 @@ Om elementet är \texttt{Composite}, läggs dess barn sist i kön.
     \}
     return current;
   \}
-\nwendcode{}\nwbegindocs{46}\nwdocspar
 
-\subsubsection{\texttt{remove}}
-Inte del av labbkraven.
-
-\nwenddocs{}\nwbegincode{47}\moddef{BFS remove}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public void remove() \{
-    throw new UnsupportedOperationException();
+    // används inte i den här labben
   \}
-\nwendcode{}\nwbegindocs{48}\nwdocspar
+\}
+\nwendcode{}\nwbegindocs{38}\nwdocspar
 
 \subsection{\texttt{PreorderIterator} (X4)}
-\noindent \textbf{Ansvar:} leverera noder i preorder (djupet-först): rot, sedan rekursivt barn vänster→höger.
+\noindent \textbf{Ansvar:} gå igenom trädet i preorder (djupet-först):
+besök noden, sedan rekursivt dess barn från vänster till höger.
 
-Filen {\Tt{}PreorderIterator.java\nwendquote} ser översiktligt ut så här:
+Filen {\Tt{}PreorderIterator.java\nwendquote} innehåller iteratorn:
 
-\nwenddocs{}\nwbegincode{49}\moddef{PreorderIterator.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{39}\moddef{PreorderIterator.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -373,178 +366,119 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class PreorderIterator implements Iterator<Component> \{
-  \LA{}PRE fields\RA{}
-  \LA{}PRE ctor\RA{}
-  \LA{}PRE hasNext\RA{}
-  \LA{}PRE next\RA{}
-  \LA{}PRE remove\RA{}
-\}
-\nwendcode{}\nwbegindocs{50}\nwdocspar
-
-\subsubsection{Fält}
-Stack över \texttt{Component} som ska besökas.
-
-\nwenddocs{}\nwbegincode{51}\moddef{PRE fields}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   private final Deque<Component> stack = new ArrayDeque<>();
-\nwendcode{}\nwbegindocs{52}\nwdocspar
 
-\subsubsection{Konstruktor}
-Börja med roten överst på stacken.
-
-\nwenddocs{}\nwbegincode{53}\moddef{PRE ctor}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  // börja med roten överst på stacken
   public PreorderIterator(Component root) \{
-    if (root == null) throw new IllegalArgumentException("root");
     stack.push(root);
   \}
-\nwendcode{}\nwbegindocs{54}\nwdocspar
 
-\subsubsection{\texttt{hasNext}}
-\nwenddocs{}\nwbegincode{55}\moddef{PRE hasNext}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public boolean hasNext() \{
     return !stack.isEmpty();
   \}
-\nwendcode{}\nwbegindocs{56}\nwdocspar
 
-\subsubsection{\texttt{next}}
-Poppa ett element; om \texttt{Composite}, lägg dess barn på stacken i \emph{omvänd} ordning.
-
-\nwenddocs{}\nwbegincode{57}\moddef{PRE next}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public Component next() \{
-    if (stack.isEmpty()) throw new NoSuchElementException();
+    if (!hasNext()) \{
+      throw new NoSuchElementException();
+    \}
     Component current = stack.pop();
     if (current instanceof Composite) \{
       List<Component> children = ((Composite) current).getChildren();
+      // lägg barnen i omvänd ordning så att första barnet kommer överst
       for (int i = children.size() - 1; i >= 0; i--) \{
         stack.push(children.get(i));
       \}
     \}
     return current;
   \}
-\nwendcode{}\nwbegindocs{58}\nwdocspar
 
-\subsubsection{\texttt{remove}}
-Inte del av labbkraven.
-
-\nwenddocs{}\nwbegincode{59}\moddef{PRE remove}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   @Override
   public void remove() \{
-    throw new UnsupportedOperationException();
+    // används inte i den här labben
   \}
-\nwendcode{}\nwbegindocs{60}\nwdocspar
+\}
+\nwendcode{}\nwbegindocs{40}\nwdocspar
+
 
 \subsection{\texttt{Client}}
 \noindent \textbf{Ansvar:} bygga en resväska med minst tre nivåer och minst tio prylar,
-skriva ut totalvikt och innehåll, ta bort några objekt, och skriva ut igen.
-I X4 demonstrerar vi även traversal i BFS och preorder.
+skriva ut totalvikt och innehåll, ta bort några objekt och skriva ut igen.
+I X4 visar vi också hur vi går igenom trädet med både for-each och explicit iterator.
 
-Filen {\Tt{}Client.java\nwendquote} ser översiktligt ut så här:
+Filen {\Tt{}Client.java\nwendquote} innehåller testprogrammet. Översiktligt ser det ut så här:
 
-\nwenddocs{}\nwbegincode{61}\moddef{Client.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{41}\moddef{Client.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 public class Client \{
   public static void main(String[] args) \{
     \LA{}Client build-structure\RA{}
-    \LA{}Client print-before\RA{}
-    \LA{}Client removals\RA{}
-    \LA{}Client print-after\RA{}
+    \LA{}Client print\RA{}
     \LA{}Client iterate-bfs\RA{}
     \LA{}Client iterate-preorder\RA{}
   \}
 \}
-\nwendcode{}\nwbegindocs{62}\nwdocspar
+\nwendcode{}\nwbegindocs{42}\nwdocspar
 
 \subsubsection{Bygg upp strukturen (\texttt{suitcase})}
-Vi skapar roten (resväskan), underbehållare och löv.
+Vi skapar roten (resväskan), underbehållare och löv, som är kläder eller accessoarer.
 
-\nwenddocs{}\nwbegincode{63}\moddef{Client build-structure}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-    // Roten: själva resväskan (egen vikt 2.3 kg)
+\nwenddocs{}\nwbegincode{43}\moddef{Client build-structure}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+    // Roten: själva resväskan
     Composite suitcase = new Composite("Resväska", 2.3);
-
-    // Större plagg (löven)
-    Leaf tshirt1 = new Leaf("T-shirt vit", 0.18);
-    Leaf tshirt2 = new Leaf("T-shirt svart", 0.19);
-    Leaf jeans   = new Leaf("Jeans", 0.75);
-    Leaf chinos  = new Leaf("Chinos", 0.55);
-    Leaf bok     = new Leaf("Pocketbok", 0.28);
 
     // Necessär (behållare) med egen vikt 0.12 kg och innehåll
     Composite necessar = new Composite("Necessär", 0.12);
-    Leaf tvål     = new Leaf("Tvål", 0.09);
-    Leaf schampo  = new Leaf("Schampo", 0.22);
-    Leaf borste   = new Leaf("Tandborste", 0.03);
-    Leaf tandkräm = new Leaf("Tandkräm", 0.11);
-    necessar.add(tvål);
-    necessar.add(schampo);
-    necessar.add(borste);
-    necessar.add(tandkräm);
+    necessar.add(new Leaf("Tvål",        0.09));
+    necessar.add(new Leaf("Schampo",     0.22));
+    necessar.add(new Leaf("Tandborste",  0.03));
+    necessar.add(new Leaf("Tandkräm",    0.11));
 
     // Påse i necessären (tredje nivån)
-    Composite påse = new Composite("Påse", 0.01);
-    Leaf hårspännen = new Leaf("Hårspännen (10 st)", 0.02);
-    påse.add(hårspännen);
-    necessar.add(påse);
+    Composite pase = new Composite("Påse", 0.01);
+    pase.add(new Leaf("Hårspännen (10 st)", 0.02));
+    necessar.add(pase);
 
-    // Mindre väska för elektronik (behållare) — nivå två
+    // Mindre väska (nivå två)
     Composite techbag = new Composite("Tech-väska", 0.20);
-    Leaf laddare  = new Leaf("Laddare", 0.15);
-    Leaf hörlurar = new Leaf("Hörlurar", 0.08);
-    Leaf powerbank = new Leaf("Powerbank", 0.18);
-    techbag.add(laddare);
-    techbag.add(hörlurar);
-    techbag.add(powerbank);
+    techbag.add(new Leaf("Laddare", 0.15));
 
     // Packa allt i resväskan
-    suitcase.add(tshirt1);
-    suitcase.add(tshirt2);
-    suitcase.add(jeans);
-    suitcase.add(chinos);
-    suitcase.add(bok);
+    suitcase.add(new Leaf("T-shirt vit",   0.18));
+    suitcase.add(new Leaf("T-shirt svart", 0.19));
+    suitcase.add(new Leaf("Jeans",         0.75));
+    suitcase.add(new Leaf("Chinos",        0.55));
+    suitcase.add(new Leaf("Pocketbok",     0.28));
     suitcase.add(necessar);
     suitcase.add(techbag);
-\nwendcode{}\nwbegindocs{64}\nwdocspar
+\nwendcode{}\nwbegindocs{44}\nwdocspar
 
 \subsubsection{Skriv ut totalvikt och innehåll (före borttagning)}
-\nwenddocs{}\nwbegincode{65}\moddef{Client print-before}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{45}\moddef{Client print}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
     System.out.printf("Totalvikt före borttagning: %.2f kg%n", suitcase.getWeight());
     System.out.println("Innehåll före borttagning:");
     System.out.println(suitcase.toString());
-\nwendcode{}\nwbegindocs{66}\nwdocspar
+\nwendcode{}\nwbegindocs{46}\nwdocspar
 
-\subsubsection{Ta bort några saker/behållare}
-Vi tar bort en pryl i en behållare, hela teknikväskan och påsen i necessären.
 
-\nwenddocs{}\nwbegincode{67}\moddef{Client removals}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-    techbag.remove(powerbank);      // ta bort en pryl i behållare
-    suitcase.remove(techbag);       // ta bort hela behållaren
-    necessar.remove(påse);          // ta bort tredje nivåns behållare
-\nwendcode{}\nwbegindocs{68}\nwdocspar
+\subsubsection{X4: Traversal med iteratorer}
+För att kontrollera ordningen skriver vi bara ut nodernas namn med \texttt{getName()}.
 
-\subsubsection{Skriv ut totalvikt och innehåll (efter borttagning)}
-\nwenddocs{}\nwbegincode{69}\moddef{Client print-after}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-    System.out.printf("Totalvikt efter borttagning: %.2f kg%n", suitcase.getWeight());
-    System.out.println("Innehåll efter borttagning:");
-    System.out.println(suitcase.toString());
-\nwendcode{}\nwbegindocs{70}\nwdocspar
-
-\subsubsection{(X4) Traversal: Bredden-först (for-each) och preorder}
-Vi skriver ut \emph{endast nodernas namn} med \texttt{getName()} så att ordningen syns tydligt.
-
-\nwenddocs{}\nwbegincode{71}\moddef{Client iterate-bfs}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-    System.out.println("Bredden-först (default for-each):");
-    for (Component co : suitcase) \{              // Composite.iterator() = BFS
-      System.out.print(co.getName() + " ");
+\nwenddocs{}\nwbegincode{47}\moddef{Client iterate-bfs}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+    System.out.println("Bredden-först (for-each, default iterator):");
+    for (Component c : suitcase) \{
+      System.out.print(c.getName() + " ");
     \}
     System.out.println();
-\nwendcode{}\nwbegindocs{72}\nwdocspar
+\nwendcode{}\nwbegindocs{48}\nwdocspar
 
-\nwenddocs{}\nwbegincode{73}\moddef{Client iterate-preorder}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
-    System.out.println("Preorder (djupet-först):");
+\nwenddocs{}\nwbegincode{49}\moddef{Client iterate-preorder}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+    System.out.println("Preorder (djupet-först, explicit iterator):");
     java.util.Iterator<Component> it = new PreorderIterator(suitcase);
     while (it.hasNext()) \{
       System.out.print(it.next().getName() + " ");
     \}
     System.out.println();
-\nwendcode{}\nwbegindocs{74}\nwdocspar
+\nwendcode{}\nwbegindocs{50}\nwdocspar
 \nwenddocs{}\end{document}
 

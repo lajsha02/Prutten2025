@@ -5,34 +5,30 @@
 \tableofcontents
 
 \section{Introduktion}
-Vi bygger en resväska som består av saker i ett träd: en sak kan antingen vara en pryl eller
-en mindre väska som i sin tur innehåller fler saker.
-Med Iterator gör vi det lätt att gå igenom allt innehåll steg för steg.
-Tanken är att klientkoden bara ska kunna “loopa” över sakerna som om det vore en vanlig lista.
-Vi bygger tre klasser:
-\texttt{Component} (abstrakt), \texttt{Leaf} (pryl) och
+Vi vill implementera uppgift 1 (resväska enligt \emph{Composite}-mönstret)
+med litterär programmering.
+Vi bygger tre klasser: \texttt{Component} (abstrakt), \texttt{Leaf} (pryl) och
 \texttt{Composite} (behållare), samt ett testprogram \texttt{Client}.
-I X4 lägger vi till två iteratorer (bredden-först och preorder) och gör
-\texttt{Composite} itererbar.
 
-Vi visar två sätt att gå igenom innehållet:
-
-\begin{itemize}
-\item\texttt{Bredden först (BFS):} först roten, sedan alla barn, sedan barnbarn osv.
-\item\texttt{Preorder (DFS):} besök en nod, gå sedan ner i dess barn innan du går vidare.
-\end{itemize}
+I extrauppgiften X4 lägger vi även till två iteratorer för vår Composite-struktur:
+en som går \emph{bredden-först} (BFS) och en som går \emph{preorder} (djupet-först).
+Då kan vi gå igenom alla noder med en for-each-sats eller med iteratorns 
+\texttt{hasNext}/\texttt{next}-metoder utan att bry oss om hur trädet är uppbyggt.
 
 \subsection{Designval}
 \begin{itemize}
   \item \texttt{Component} bär gemensamma attribut: \texttt{name} och \texttt{weight} (egen vikt).
+        Dessa lagras som \emph{private final}-fält och kan läsas via getters.
   \item \texttt{Leaf} representerar en enskild pryl. \texttt{getWeight()} returnerar bara dess egen vikt.
   \item \texttt{Composite} representerar en behållare med barn. \texttt{getWeight()} summerar
         behållarens egen vikt och alla barns vikter. \texttt{toString()} traverserar rekursivt.
-  \item Metoderna \texttt{add}/\texttt{remove} finns bara i \texttt{Composite} (inte i \texttt{Component}).
+  \item Metoderna \texttt{add} och \texttt{remove} finns bara i \texttt{Composite} (inte i \texttt{Component}).
+  \item I X4 låter vi \texttt{Composite} implementera \texttt{Iterable<Component>} och skriver
+        två iterator-klasser: \texttt{BreadthFirstIterator} (BFS) och \texttt{PreorderIterator} (DFS).
 \end{itemize}
 
 \subsection{Bygga och kompilera}
-Vi vill skriva en byggfil för GNU Make. Själva, maskin-genererade reglerna
+Vi vill skriva en byggfil för GNU Make. De maskin-genererade reglerna
 läggs i \texttt{Suitcase.mk} som tanglas ur denna \texttt{.nw}-fil och sedan
 \emph{inkluderas} från toppens \texttt{Makefile}.
 
@@ -43,11 +39,11 @@ TARGETS= Suitcase.pdf Suitcase.mk
 all: classes Suitcase.pdf
 
 Suitcase.pdf:  Suitcase.tex
-	pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
-	pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
+  pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
+  pdflatex -interaction=nonstopmode -halt-on-error Suitcase.tex
 
 Suitcase.tex: Suitcase.nw
-	noweave -latex Suitcase.nw > Suitcase.tex
+  noweave -latex Suitcase.nw > Suitcase.tex
 @
 
 Därefter tanglar vi ut varje \texttt{.java}-fil ur den litterära källan
@@ -55,22 +51,22 @@ Därefter tanglar vi ut varje \texttt{.java}-fil ur den litterära källan
 
 <<Suitcase.mk>>=
 Component.java: Suitcase.nw
-	notangle -L'//line %L "%F"%N' -RComponent.java Suitcase.nw > Component.java
+  notangle -L'//line %L "%F"%N' -RComponent.java Suitcase.nw > Component.java
 
 Leaf.java: Suitcase.nw
-	notangle -L'//line %L "%F"%N' -RLeaf.java Suitcase.nw > Leaf.java
+  notangle -L'//line %L "%F"%N' -RLeaf.java Suitcase.nw > Leaf.java
 
 Composite.java: Suitcase.nw
-	notangle -L'//line %L "%F"%N' -RComposite.java Suitcase.nw > Composite.java
+  notangle -L'//line %L "%F"%N' -RComposite.java Suitcase.nw > Composite.java
 
 Client.java: Suitcase.nw
-	notangle -L'//line %L "%F"%N' -RClient.java Suitcase.nw > Client.java
+  notangle -L'//line %L "%F"%N' -RClient.java Suitcase.nw > Client.java
 
 BreadthFirstIterator.java: Suitcase.nw
-	notangle -L'//line %L "%F"%N' -RBreadthFirstIterator.java Suitcase.nw > BreadthFirstIterator.java
+  notangle -L'//line %L "%F"%N' -RBreadthFirstIterator.java Suitcase.nw > BreadthFirstIterator.java
 
 PreorderIterator.java: Suitcase.nw
-	notangle -L'//line %L "%F"%N' -RPreorderIterator.java Suitcase.nw > PreorderIterator.java
+  notangle -L'//line %L "%F"%N' -RPreorderIterator.java Suitcase.nw > PreorderIterator.java
 @
 
 Nu lägger vi sektionen för att kompilera och köra Java:
@@ -78,10 +74,10 @@ Nu lägger vi sektionen för att kompilera och köra Java:
 <<Suitcase.mk>>=
 .PHONY: classes run clean-Suitcase
 classes: Component.java Leaf.java Composite.java Client.java BreadthFirstIterator.java PreorderIterator.java
-	@if [ -x ./noerr.pl ]; then ./noerr.pl javac *.java; else javac *.java; fi
+  @if [ -x ./noerr.pl ]; then ./noerr.pl javac *.java; else javac *.java; fi
 
 run: classes
-	java Client
+  java Client
 @
 
 Slutligen städreglerna:
@@ -89,18 +85,18 @@ Slutligen städreglerna:
 <<Suitcase.mk>>=
 clean: clean-Suitcase
 clean-Suitcase:
-	rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
-	rm -f *.class *.java
+  rm -f Suitcase.tex Suitcase.aux Suitcase.log Suitcase.toc
+  rm -f *.class *.java
 @
 
 \section{Kod}
-I detta avsnitt definierar vi Javafilerna som tänglas ut.
+I det här avsnittet definierar vi Javafilerna som tänglas ut från denna \texttt{.nw}-fil.
 
-\subsection{\texttt{Component} (abstrakt)}
+\subsection{\texttt{Klassen Component}}
 \noindent \textbf{Ansvar:} bas-klass med namn och egenvikt samt abstrakta metoder.
 
-Filen [[Component.java]] ser översiktligt ut så här:
-
+Filen [[Component.java]] innehåller definitionen av klassen \texttt{Component}.
+Översiktligt ser den ut så här:
 <<Component.java>>=
 public abstract class Component {
   <<Component attributes>>
@@ -115,40 +111,54 @@ Vi vill att \texttt{Component} ska ha följande attribut:
   \item \texttt{name}: namn på komponenten (sträng)
   \item \texttt{weight}: egen vikt i kg (flyttal)
 \end{itemize}
-Dessa är \emph{protected final}.
+
+Dessa attribut ska inte kunna ändras efter att objektet skapats. 
+Vi markerar dem därför som \texttt{private final} och ger enkla getters.
 
 <<Component attributes>>=
-  protected final String name;
-  protected final double weight;
+  private final String name;
+  private final double weight;
 @
 
 \subsubsection{Konstruktor}
-Vi kontrollerar att namnet inte är tomt och att vikten är icke-negativ.
+Konstruktorn tar emot namn och vikt och lagrar dem.
 
 <<Component constructor>>=
-  protected Component(String name, double weight) {
-    if (name == null || name.isBlank()) throw new IllegalArgumentException("name");
-    if (weight < 0) throw new IllegalArgumentException("weight");
+  Component(String name, double weight) {
     this.name = name;
     this.weight = weight;
   }
 @
 
 \subsubsection{Metoder}
-Vi exponerar \texttt{getName} och \texttt{getOwnWeight}. De abstrakta metoderna
-\texttt{getWeight} och \texttt{toString} implementeras i subklasser.
+I \texttt{Component} deklarerar vi getters för namnet och egenvikten, samt de
+abstrakta metoderna \texttt{getWeight} och \texttt{toString} som alla 
+subklasser måste implementera:
+\begin{itemize}
+  \item \texttt{getName}: returnerar komponentens namn.
+  \item \texttt{getOwnWeight}: returnerar komponentens egen vikt (utan barn).
+  \item \texttt{getWeight}: ska returnera totalvikten (inklusive barns vikt).
+  \item \texttt{toString}: ska returnera en strängrepresentation av komponenten.
+\end{itemize}
 
 <<Component methods>>=
-  public String getName() { return name; }
-  public double getOwnWeight() { return weight; }
+  public String getName() {
+    return name;
+  }
+
+  public double getOwnWeight() {
+    return weight;
+  }
+
   public abstract double getWeight();
-  @Override public abstract String toString();
+  public abstract String toString();
 @
 
 \subsection{\texttt{Leaf}}
 \noindent \textbf{Ansvar:} en enskild pryl att packa.
 
-Filen [[Leaf.java]] ser översiktligt ut så här:
+Filen [[Leaf.java]] innehåller definitionen av klassen \texttt{Leaf}.
+Översiktligt ser den ut så här:
 
 <<Leaf.java>>=
 public class Leaf extends Component {
@@ -158,7 +168,7 @@ public class Leaf extends Component {
 @
 
 \subsubsection{Konstruktor}
-Konstruktorn tar namn och egen vikt och skickar vidare till \texttt{Component}.
+Konstruktorn tar namn och egen vikt och skickar vidare till basklassen \texttt{Component}.
 
 <<Leaf constructor>>=
   public Leaf(String name, double weight) {
@@ -172,40 +182,36 @@ Totalvikten för ett löv är samma som dess egen vikt. \texttt{toString} beskri
 <<Leaf methods>>=
   @Override
   public double getWeight() {
-    return this.weight;
+    return getOwnWeight();
   }
 
   @Override
   public String toString() {
-    return this.name + " (" + this.weight + " kg)";
+    return getName() + " (" + getOwnWeight() + ")";
   }
 @
 
 \subsection{\texttt{Composite}}
 \noindent \textbf{Ansvar:} en behållare som kan innehålla andra \texttt{Component}.
-Egen vikt \emph{plus} alla barns vikter utgör totalvikten. I X4 gör vi den även
-\emph{itererbar} så att for-each fungerar (default: BFS).
+Egen vikt \emph{plus} alla barns vikter utgör totalvikten. I X4 gör vi den också
+itererbar så att vi kan gå igenom trädet med iteratorer.
 
-Filen [[Composite.java]] ser översiktligt ut så här:
+Filen [[Composite.java]] innehåller definitionen av klassen \texttt{Composite}.
+Översiktligt ser den ut så här:
 
 <<Composite.java>>=
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Composite extends Component implements Iterable<Component> {
   <<Composite fields>>
   <<Composite constructor>>
-  <<Composite child-management>>
-  <<Composite weight>>
-  <<Composite toString>>
-  <<Composite iterability>>
+  <<Composite methods>>
+  <<Composite iterator methods>>
 }
 @
 
 \subsubsection{Fält}
-Vi lagrar barn i en muterbar lista, men exponerar en oföränderlig vy utåt.
+Vi lagrar barn i en muterbar lista av \texttt{Component}.
 
 <<Composite fields>>=
   private final List<Component> children = new ArrayList<>();
@@ -215,22 +221,26 @@ Vi lagrar barn i en muterbar lista, men exponerar en oföränderlig vy utåt.
 Konstruktorn tar behållarens namn och egen vikt.
 
 <<Composite constructor>>=
-  public Composite(String name, double ownWeight) {
-    super(name, ownWeight);
+  public Composite(String name, double weight) {
+    super(name, weight);
   }
 @
 
-\subsubsection{Barnhantering (\texttt{add}/\texttt{remove}/\texttt{getChildren})}
-Vi kan lägga till och ta bort barn, och ge tillbaka en oföränderlig vy av listan.
+\subsubsection{Metoder}
+\paragraph{Barnhantering (\texttt{add}/\texttt{remove}/\texttt{getChild}/\texttt{getChildren})}
+Vi kan lägga till och ta bort barn, och hämta ett barn via index eller läsa alla barn.
 
-<<Composite child-management>>=
-  public void add(Component c) {
-    if (c == null) throw new IllegalArgumentException("child");
-    children.add(c);
+<<Composite methods>>=
+  public void add(Component component) {
+    children.add(component);
   }
 
-  public void remove(Component c) {
-    children.remove(c);
+  public void remove(Component component) {
+    children.remove(component);
+  }
+
+  public Component getChild(int index) {
+    return children.get(index);
   }
 
   public List<Component> getChildren() {
@@ -238,44 +248,52 @@ Vi kan lägga till och ta bort barn, och ge tillbaka en oföränderlig vy av lis
   }
 @
 
-\subsubsection{Totalvikt (\texttt{getWeight})}
-Totalvikt = egen vikt + summan av alla barns totalvikter (rekursivt).
+\paragraph{Totalvikt (\texttt{getWeight})}
+Totalvikt = behållarens egen vikt + summan av alla barns totalvikter (rekursivt).
+Varje anrop på ett \texttt{Composite}-objekt går igenom dess barn och anropar
+deras \texttt{getWeight()} enligt mönstret.
 
-<<Composite weight>>=
+<<Composite methods>>=
   @Override
   public double getWeight() {
-    double sum = this.weight;
-    for (Component c : children) {
-      sum += c.getWeight();
+    double totalWeight = getOwnWeight();
+    for (Component child : children) {
+      totalWeight += child.getWeight();
     }
-    return sum;
+    return totalWeight;
   }
 @
 
-\subsubsection{\texttt{toString}}
-Vi bygger en rekursiv beskrivning där barn listas inom hakparenteser.
+\paragraph{\texttt{toString}}
+Vi bygger en rekursiv beskrivning där behållarens namn och egen vikt visas,
+och alla barn listas inom hakparenteser. Även här anropar vi barnens 
+\texttt{toString()} enligt mönstret.
 
-<<Composite toString>>=
+<<Composite methods>>=
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append(this.name).append(" (").append(this.weight).append(" kg) [");
+    sb.append(getName()).append(" (").append(getOwnWeight()).append(") [");
     for (int i = 0; i < children.size(); i++) {
       sb.append(children.get(i).toString());
-      if (i < children.size() - 1) sb.append(", ");
+      if (i < children.size() - 1) {
+        sb.append(", ");
+      }
     }
     sb.append("]");
+
     return sb.toString();
   }
 @
 
-\subsubsection{Itererbarhet (X4)}
-Vi gör \texttt{Composite} \texttt{Iterable<Component>}. Default\-iteratorn är BFS.
-Vi lägger även metoder för explicit BFS respektive preorder.
+\paragraph{Iterator-metoder (X4)}
+\texttt{Composite} implementerar \texttt{Iterable<Component>}. Default\-iteratorn
+är bredden-först. Vi lägger också till metoder för att uttryckligen få BFS respektive preorder.
 
-<<Composite iterability>>=
+<<Composite iterator methods>>=
   @Override
   public Iterator<Component> iterator() {
+    // default: bredden-först
     return new BreadthFirstIterator(this);
   }
 
@@ -289,9 +307,10 @@ Vi lägger även metoder för explicit BFS respektive preorder.
 @
 
 \subsection{\texttt{BreadthFirstIterator} (X4)}
-\noindent \textbf{Ansvar:} leverera noder i bredden-först-ordning (rot, alla barn, barnbarn, \ldots).
+\noindent \textbf{Ansvar:} gå igenom trädet i bredden-först-ordning:
+rot, alla barn, alla barnbarn, osv.
 
-Filen [[BreadthFirstIterator.java]] ser översiktligt ut så här:
+Filen [[BreadthFirstIterator.java]] innehåller iteratorn:
 
 <<BreadthFirstIterator.java>>=
 import java.util.ArrayDeque;
@@ -300,46 +319,23 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class BreadthFirstIterator implements Iterator<Component> {
-  <<BFS fields>>
-  <<BFS ctor>>
-  <<BFS hasNext>>
-  <<BFS next>>
-  <<BFS remove>>
-}
-@
-
-\subsubsection{Fält}
-Vi använder en kö (\texttt{ArrayDeque}) av \texttt{Component}.
-
-<<BFS fields>>=
   private final Deque<Component> queue = new ArrayDeque<>();
-@
 
-\subsubsection{Konstruktor}
-Vi startar med roten.
-
-<<BFS ctor>>=
+  // starta med roten i kön
   public BreadthFirstIterator(Component root) {
-    if (root == null) throw new IllegalArgumentException("root");
     queue.add(root);
   }
-@
 
-\subsubsection{\texttt{hasNext}}
-<<BFS hasNext>>=
   @Override
   public boolean hasNext() {
     return !queue.isEmpty();
   }
-@
 
-\subsubsection{\texttt{next}}
-Om elementet är \texttt{Composite}, läggs dess barn sist i kön.
-
-<<BFS next>>=
   @Override
   public Component next() {
-    if (queue.isEmpty()) throw new NoSuchElementException();
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
     Component current = queue.removeFirst();
     if (current instanceof Composite) {
       for (Component child : ((Composite) current).getChildren()) {
@@ -348,22 +344,19 @@ Om elementet är \texttt{Composite}, läggs dess barn sist i kön.
     }
     return current;
   }
-@
 
-\subsubsection{\texttt{remove}}
-Inte del av labbkraven.
-
-<<BFS remove>>=
   @Override
   public void remove() {
-    throw new UnsupportedOperationException();
+    // används inte i den här labben
   }
+}
 @
 
 \subsection{\texttt{PreorderIterator} (X4)}
-\noindent \textbf{Ansvar:} leverera noder i preorder (djupet-först): rot, sedan rekursivt barn vänster→höger.
+\noindent \textbf{Ansvar:} gå igenom trädet i preorder (djupet-först):
+besök noden, sedan rekursivt dess barn från vänster till höger.
 
-Filen [[PreorderIterator.java]] ser översiktligt ut så här:
+Filen [[PreorderIterator.java]] innehåller iteratorn:
 
 <<PreorderIterator.java>>=
 import java.util.ArrayDeque;
@@ -373,81 +366,54 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class PreorderIterator implements Iterator<Component> {
-  <<PRE fields>>
-  <<PRE ctor>>
-  <<PRE hasNext>>
-  <<PRE next>>
-  <<PRE remove>>
-}
-@
-
-\subsubsection{Fält}
-Stack över \texttt{Component} som ska besökas.
-
-<<PRE fields>>=
   private final Deque<Component> stack = new ArrayDeque<>();
-@
 
-\subsubsection{Konstruktor}
-Börja med roten överst på stacken.
-
-<<PRE ctor>>=
+  // börja med roten överst på stacken
   public PreorderIterator(Component root) {
-    if (root == null) throw new IllegalArgumentException("root");
     stack.push(root);
   }
-@
 
-\subsubsection{\texttt{hasNext}}
-<<PRE hasNext>>=
   @Override
   public boolean hasNext() {
     return !stack.isEmpty();
   }
-@
 
-\subsubsection{\texttt{next}}
-Poppa ett element; om \texttt{Composite}, lägg dess barn på stacken i \emph{omvänd} ordning.
-
-<<PRE next>>=
   @Override
   public Component next() {
-    if (stack.isEmpty()) throw new NoSuchElementException();
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
     Component current = stack.pop();
     if (current instanceof Composite) {
       List<Component> children = ((Composite) current).getChildren();
+      // lägg barnen i omvänd ordning så att första barnet kommer överst
       for (int i = children.size() - 1; i >= 0; i--) {
         stack.push(children.get(i));
       }
     }
     return current;
   }
-@
 
-\subsubsection{\texttt{remove}}
-Inte del av labbkraven.
-
-<<PRE remove>>=
   @Override
   public void remove() {
-    throw new UnsupportedOperationException();
+    // används inte i den här labben
   }
+}
 @
+
 
 \subsection{\texttt{Client}}
 \noindent \textbf{Ansvar:} bygga en resväska med minst tre nivåer och minst tio prylar,
-skriva ut totalvikt och innehåll, ta bort några objekt, och skriva ut igen.
-I X4 demonstrerar vi även traversal i BFS och preorder.
+skriva ut totalvikt och innehåll, ta bort några objekt och skriva ut igen.
+I X4 visar vi också hur vi går igenom trädet med både for-each och explicit iterator.
 
-Filen [[Client.java]] ser översiktligt ut så här:
+Filen [[Client.java]] innehåller testprogrammet. Översiktligt ser det ut så här:
 
 <<Client.java>>=
 public class Client {
   public static void main(String[] args) {
     <<Client build-structure>>
-    <<Client print-before>>
-    <<Client removals>>
-    <<Client print-after>>
+    <<Client print>>
     <<Client iterate-bfs>>
     <<Client iterate-preorder>>
   }
@@ -455,91 +421,59 @@ public class Client {
 @
 
 \subsubsection{Bygg upp strukturen (\texttt{suitcase})}
-Vi skapar roten (resväskan), underbehållare och löv.
+Vi skapar roten (resväskan), underbehållare och löv, som är kläder eller accessoarer.
 
 <<Client build-structure>>=
-    // Roten: själva resväskan (egen vikt 2.3 kg)
+    // Roten: själva resväskan
     Composite suitcase = new Composite("Resväska", 2.3);
-
-    // Större plagg (löven)
-    Leaf tshirt1 = new Leaf("T-shirt vit", 0.18);
-    Leaf tshirt2 = new Leaf("T-shirt svart", 0.19);
-    Leaf jeans   = new Leaf("Jeans", 0.75);
-    Leaf chinos  = new Leaf("Chinos", 0.55);
-    Leaf bok     = new Leaf("Pocketbok", 0.28);
 
     // Necessär (behållare) med egen vikt 0.12 kg och innehåll
     Composite necessar = new Composite("Necessär", 0.12);
-    Leaf tvål     = new Leaf("Tvål", 0.09);
-    Leaf schampo  = new Leaf("Schampo", 0.22);
-    Leaf borste   = new Leaf("Tandborste", 0.03);
-    Leaf tandkräm = new Leaf("Tandkräm", 0.11);
-    necessar.add(tvål);
-    necessar.add(schampo);
-    necessar.add(borste);
-    necessar.add(tandkräm);
+    necessar.add(new Leaf("Tvål",        0.09));
+    necessar.add(new Leaf("Schampo",     0.22));
+    necessar.add(new Leaf("Tandborste",  0.03));
+    necessar.add(new Leaf("Tandkräm",    0.11));
 
     // Påse i necessären (tredje nivån)
-    Composite påse = new Composite("Påse", 0.01);
-    Leaf hårspännen = new Leaf("Hårspännen (10 st)", 0.02);
-    påse.add(hårspännen);
-    necessar.add(påse);
+    Composite pase = new Composite("Påse", 0.01);
+    pase.add(new Leaf("Hårspännen (10 st)", 0.02));
+    necessar.add(pase);
 
-    // Mindre väska för elektronik (behållare) — nivå två
+    // Mindre väska (nivå två)
     Composite techbag = new Composite("Tech-väska", 0.20);
-    Leaf laddare  = new Leaf("Laddare", 0.15);
-    Leaf hörlurar = new Leaf("Hörlurar", 0.08);
-    Leaf powerbank = new Leaf("Powerbank", 0.18);
-    techbag.add(laddare);
-    techbag.add(hörlurar);
-    techbag.add(powerbank);
+    techbag.add(new Leaf("Laddare", 0.15));
 
     // Packa allt i resväskan
-    suitcase.add(tshirt1);
-    suitcase.add(tshirt2);
-    suitcase.add(jeans);
-    suitcase.add(chinos);
-    suitcase.add(bok);
+    suitcase.add(new Leaf("T-shirt vit",   0.18));
+    suitcase.add(new Leaf("T-shirt svart", 0.19));
+    suitcase.add(new Leaf("Jeans",         0.75));
+    suitcase.add(new Leaf("Chinos",        0.55));
+    suitcase.add(new Leaf("Pocketbok",     0.28));
     suitcase.add(necessar);
     suitcase.add(techbag);
 @
 
 \subsubsection{Skriv ut totalvikt och innehåll (före borttagning)}
-<<Client print-before>>=
+<<Client print>>=
     System.out.printf("Totalvikt före borttagning: %.2f kg%n", suitcase.getWeight());
     System.out.println("Innehåll före borttagning:");
     System.out.println(suitcase.toString());
 @
 
-\subsubsection{Ta bort några saker/behållare}
-Vi tar bort en pryl i en behållare, hela teknikväskan och påsen i necessären.
 
-<<Client removals>>=
-    techbag.remove(powerbank);      // ta bort en pryl i behållare
-    suitcase.remove(techbag);       // ta bort hela behållaren
-    necessar.remove(påse);          // ta bort tredje nivåns behållare
-@
-
-\subsubsection{Skriv ut totalvikt och innehåll (efter borttagning)}
-<<Client print-after>>=
-    System.out.printf("Totalvikt efter borttagning: %.2f kg%n", suitcase.getWeight());
-    System.out.println("Innehåll efter borttagning:");
-    System.out.println(suitcase.toString());
-@
-
-\subsubsection{(X4) Traversal: Bredden-först (for-each) och preorder}
-Vi skriver ut \emph{endast nodernas namn} med \texttt{getName()} så att ordningen syns tydligt.
+\subsubsection{X4: Traversal med iteratorer}
+För att kontrollera ordningen skriver vi bara ut nodernas namn med \texttt{getName()}.
 
 <<Client iterate-bfs>>=
-    System.out.println("Bredden-först (default for-each):");
-    for (Component co : suitcase) {              // Composite.iterator() = BFS
-      System.out.print(co.getName() + " ");
+    System.out.println("Bredden-först (for-each, default iterator):");
+    for (Component c : suitcase) {
+      System.out.print(c.getName() + " ");
     }
     System.out.println();
 @
 
 <<Client iterate-preorder>>=
-    System.out.println("Preorder (djupet-först):");
+    System.out.println("Preorder (djupet-först, explicit iterator):");
     java.util.Iterator<Component> it = new PreorderIterator(suitcase);
     while (it.hasNext()) {
       System.out.print(it.next().getName() + " ");

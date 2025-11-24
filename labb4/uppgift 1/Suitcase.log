@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.7)  19 NOV 2025 09:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.7)  19 NOV 2025 09:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -85,40 +85,16 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \openout3 = `Suitcase.toc'.
 
 
-Overfull \hbox (0.57364pt too wide) in paragraph at lines 20--22
-[]\OT1/cmtt/m/n/10 Component \OT1/cmr/m/n/10 b^^?ar gemen-samma at-tribut: \OT1
-/cmtt/m/n/10 name \OT1/cmr/m/n/10 och \OT1/cmtt/m/n/10 weight \OT1/cmr/m/n/10 (
-egen vikt). Dessa
- []
-
-
 
 [1
 
 {/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (6.13643pt too wide) in paragraph at lines 26--28
-\OT1/cmr/m/n/10 tv^^Wa iterator-klasser: \OT1/cmtt/m/n/10 BreadthFirstIterator 
-\OT1/cmr/m/n/10 (BFS) och \OT1/cmtt/m/n/10 PreorderIterator
- []
-
-
 
 [2]
-Overfull \hbox (41.99963pt too wide) in paragraph at lines 66--66
- []  \OT1/cmtt/m/n/10 notangle -L'//line %L "%F"%N' -RBreadthFirstIterator.java
- Suitcase.nw > BreadthFirstIterator.java[]  
- []
-
-
-Overfull \hbox (89.24922pt too wide) in paragraph at lines 76--76
- []\OT1/cmtt/m/n/10 classes: Component.java Leaf.java Composite.java Client.jav
-a BreadthFirstIterator.java PreorderIterator.java[]  
- []
-
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 95.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 81.
 
-Overfull \hbox (19.35126pt too wide) in paragraph at lines 98--100
+Overfull \hbox (19.35126pt too wide) in paragraph at lines 84--86
 []\OT1/cmr/m/n/10 Filen \OT1/cmtt/m/n/10 Component.java \OT1/cmr/m/n/10 in-neh^
 ^Waller def-i-ni-tio-nen av klassen \OT1/cmtt/m/n/10 Component\OT1/cmr/m/n/10 .
  []Oversiktligt
@@ -127,54 +103,55 @@ Overfull \hbox (19.35126pt too wide) in paragraph at lines 98--100
 
 
 [3]
+Overfull \hbox (1.50021pt too wide) in paragraph at lines 127--128
+[]\OT1/cmtt/m/n/10 getWeight\OT1/cmr/m/n/10 : ab-strakt metod som ska re-turn-e
+ra to-talvik-ten (inklu-sive barn). 
+ []
+
+
 
 [4]
-Overfull \hbox (7.1113pt too wide) in paragraph at lines 171--172
+Overfull \hbox (7.1113pt too wide) in paragraph at lines 152--153
 \OT1/cmr/m/n/10 Konstruktorn tar namn och egen vikt och skickar vi-dare till ba
 sklassen \OT1/cmtt/m/n/10 Component\OT1/cmr/m/n/10 . 
  []
 
 
-
-[5]
-Overfull \hbox (19.35126pt too wide) in paragraph at lines 199--201
+Overfull \hbox (19.35126pt too wide) in paragraph at lines 179--181
 []\OT1/cmr/m/n/10 Filen \OT1/cmtt/m/n/10 Composite.java \OT1/cmr/m/n/10 in-neh^
 ^Waller def-i-ni-tio-nen av klassen \OT1/cmtt/m/n/10 Composite\OT1/cmr/m/n/10 .
  []Oversiktligt
  []
 
-LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 231.
 
+
+[5]
 
 [6]
 
 [7]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 276.
+
 
 [8]
 
 [9]
 
-[10]
-
-[11]
-
-[12]
-
-[13] (./Suitcase.aux)
+[10] (./Suitcase.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 782 strings out of 474662
- 12988 string characters out of 5751109
- 409180 words of memory out of 5000000
- 23880 multiletter control sequences out of 15000+600000
+ 781 strings out of 474662
+ 12980 string characters out of 5751109
+ 410180 words of memory out of 5000000
+ 23879 multiletter control sequences out of 15000+600000
  564457 words of font info for 55 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 35i,7n,50p,432b,388s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 35i,7n,50p,416b,388s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </Users/lisadahl/Library/texlive/2025basic/texmf-var/fonts/pk/ljfour/jknappe
 n/ec/tcrm1000.600pk></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/pu
@@ -187,10 +164,10 @@ st/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025basic/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2025basic/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2025ba
 sic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on Suitcase.pdf (13 pages, 153608 bytes).
+Output written on Suitcase.pdf (10 pages, 145193 bytes).
 PDF statistics:
- 102 PDF objects out of 1000 (max. 8388607)
- 65 compressed objects within 1 object stream
+ 92 PDF objects out of 1000 (max. 8388607)
+ 58 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

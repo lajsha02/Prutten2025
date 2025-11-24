@@ -1,4 +1,4 @@
-\title{Human factory i Java (paket \texttt{human})}
+\documentclass{article}\usepackage{noweb}\pagestyle{noweb}\noweboptions{}\begin{document}\nwfilename{HumanFactory.nw}\nwbegindocs{0}\title{Human factory i Java (paket \texttt{human})}% ===> this file was generated automatically by noweave --- better not edit it
 \author{Lisa Dahl och Mostafa Shihadeh}
 
 \maketitle
@@ -22,7 +22,7 @@ Precis som i uppgift 1 låter vi denna \texttt{.nw} tängla en maskin\-genererad
 
 Först lägger vi grundmålen, inkl.\ PDF:
 
-<<HumanFactory.mk>>=
+\nwenddocs{}\nwbegincode{1}\moddef{HumanFactory.mk}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 TARGETS= HumanFactory.pdf HumanFactory.mk
 all: classes-human HumanFactory.pdf
 
@@ -32,12 +32,12 @@ HumanFactory.pdf: HumanFactory.tex
 
 HumanFactory.tex: HumanFactory.nw
   noweave -latex HumanFactory.nw > HumanFactory.tex
-@
+\nwendcode{}\nwbegindocs{2}\nwdocspar
 
 Därefter regler för att tängla ut Java\-källorna (\texttt{human/} skapas vid behov)
 med radmarkörer (bra med \texttt{noerr.pl}):
 
-<<HumanFactory.mk>>=
+\nwenddocs{}\nwbegincode{3}\moddef{HumanFactory.mk}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 human/Human.java: HumanFactory.nw
   mkdir -p human
   notangle -L'//line %L "%F"%N' -Rhuman/Human.java HumanFactory.nw > human/Human.java
@@ -56,29 +56,29 @@ human/Man.java: HumanFactory.nw
 
 TestHuman.java: HumanFactory.nw
   notangle -L'//line %L "%F"%N' -RTestHuman.java HumanFactory.nw > TestHuman.java
-@
+\nwendcode{}\nwbegindocs{4}\nwdocspar
 
 Kompilera och kör:
 
-<<HumanFactory.mk>>=
+\nwenddocs{}\nwbegincode{5}\moddef{HumanFactory.mk}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 .PHONY: classes-human run-human clean-HumanFactory
 classes-human: human/Human.java human/NonBinary.java human/Woman.java human/Man.java TestHuman.java
   @if [ -x ./noerr.pl ]; then ./noerr.pl javac human/*.java TestHuman.java; else javac human/*.java TestHuman.java; fi
 
 run-human: classes-human
   java TestHuman
-@
+\nwendcode{}\nwbegindocs{6}\nwdocspar
 
 Städregler:
 
-<<HumanFactory.mk>>=
+\nwenddocs{}\nwbegincode{7}\moddef{HumanFactory.mk}\plusendmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 clean: clean-HumanFactory
 clean-HumanFactory:
   rm -f HumanFactory.tex HumanFactory.aux HumanFactory.log HumanFactory.toc
   rm -f human/*.class *.class
   rm -f TestHuman.java human/*.java
   rmdir human 2>/dev/null || true
-@
+\nwendcode{}\nwbegindocs{8}\nwdocspar
 
 \section{Kod}
 Här följer klasserna i paketet \texttt{human} och testprogrammet. Varje fil
@@ -87,37 +87,37 @@ presenteras med en översikt och därefter delsteg i samma stil som i uppgift 1.
 \subsection{\texttt{Human} (abstrakt)}
 \noindent \textbf{Ansvar:} bära gemensamma fält (\texttt{name}, \texttt{pnr}) och erbjuda fabriksmetoden.
 
-Filen [[human/Human.java]] ser översiktligt ut så här:
+Filen {\Tt{}human/Human.java\nwendquote} ser översiktligt ut så här:
 
-<<human/Human.java>>=
+\nwenddocs{}\nwbegincode{9}\moddef{human/Human.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 package human;
 
-public abstract class Human {
-  <<Human fields>>
-  <<Human constructor >>
-  <<Human factory>>
-  <<Human methods>>
-}
-@
+public abstract class Human \{
+  \LA{}Human fields\RA{}
+  \LA{}Human constructor \RA{}
+  \LA{}Human factory\RA{}
+  \LA{}Human methods\RA{}
+\}
+\nwendcode{}\nwbegindocs{10}\nwdocspar
 
 \subsubsection{Fält}
 Vi lagrar namn och personnummer.
 
-<<Human fields>>=
+\nwenddocs{}\nwbegincode{11}\moddef{Human fields}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
   private final String name;
   private final String pnr;
-@
+\nwendcode{}\nwbegindocs{12}\nwdocspar
 
 \subsubsection{Konstruktor (paket-synlig)}
 Konstruktorn är \emph{paket\-synlig} (ingen modifierare) så att kod utanför
 \texttt{human} inte kan kompilera "new" \texttt{Human} eller anonym subklass.
 
-<<Human constructor >>=
-  Human(String name, String pnr) {
+\nwenddocs{}\nwbegincode{13}\moddef{Human constructor }\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  Human(String name, String pnr) \{
     this.name = name;
     this.pnr = pnr;
-  }
-@
+  \}
+\nwendcode{}\nwbegindocs{14}\nwdocspar
 
 \subsubsection{Factory metod}
 Vi följer uppgiftens tumregel på näst sista tecknet, dvs:
@@ -128,112 +128,112 @@ Vi följer uppgiftens tumregel på näst sista tecknet, dvs:
 \end{itemize}
 
 
-<<Human factory>>=
-  public static Human create (String name, String pnr) {
-    if (pnr.charAt(pnr.length() - 2) == '0') {
+\nwenddocs{}\nwbegincode{15}\moddef{Human factory}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  public static Human create (String name, String pnr) \{
+    if (pnr.charAt(pnr.length() - 2) == '0') \{
     return new NonBinary(name, pnr);
-    }
-    else if (pnr.charAt(pnr.length() - 2) % 2 == 0) {
+    \}
+    else if (pnr.charAt(pnr.length() - 2) % 2 == 0) \{
     return new Woman(name, pnr);
-    }
-    else {
+    \}
+    else \{
     return new Man(name, pnr);
-    }
-  }
+    \}
+  \}
 
-@
+\nwendcode{}\nwbegindocs{16}\nwdocspar
 
 \subsubsection{Metoder}
 Vi exponerar namn och pnr. \texttt{toString()} implementeras i subklasserna.
 
-<<Human methods>>=
-  public String getName() { return name; }
-  public String getPnr() { return pnr; }
+\nwenddocs{}\nwbegincode{17}\moddef{Human methods}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  public String getName() \{ return name; \}
+  public String getPnr() \{ return pnr; \}
   @Override public abstract String toString();
-@
+\nwendcode{}\nwbegindocs{18}\nwdocspar
 
 \subsection{\texttt{NonBinary klassen}}
 \noindent \textbf{Ansvar:} konkret subklass av \texttt{Human} som representerar en icke\-binär. Klassen är \emph{paket\-synlig}
 (ingen \texttt{public}) och \emph{final} så klienten varken kan referera till den
 eller ärva utanför paketet.
 
-Filen [[human/NonBinary.java]]:
+Filen {\Tt{}human/NonBinary.java\nwendquote}:
 
-<<human/NonBinary.java>>=
+\nwenddocs{}\nwbegincode{19}\moddef{human/NonBinary.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 package human;
 
-final class NonBinary extends Human {
-  NonBinary(String name, String pnr) {
+final class NonBinary extends Human \{
+  NonBinary(String name, String pnr) \{
     super(name, pnr);
-  }
+  \}
   @Override
-  public String toString() {
+  public String toString() \{
     return "Jag är icke-binär och heter " + getName();
-  }
-}
-@
+  \}
+\}
+\nwendcode{}\nwbegindocs{20}\nwdocspar
 
 
 
 \subsection{\texttt{Woman}}
 \noindent \textbf{Ansvar:} konkret subklass av \texttt{Human} som representerar en kvinna. Implementeras på precis samma sätt som NonBinary.
 
-Filen [[human/Woman.java]]:
+Filen {\Tt{}human/Woman.java\nwendquote}:
 
-<<human/Woman.java>>=
+\nwenddocs{}\nwbegincode{21}\moddef{human/Woman.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 package human;
 
-final class Woman extends Human {
-    Woman(String name, String pnr) {
+final class Woman extends Human \{
+    Woman(String name, String pnr) \{
         super(name, pnr);
-    }
+    \}
 
     @Override
-    public String toString() {
+    public String toString() \{
         return "Jag är kvinna och heter " + getName();
-    }
-}
-@
+    \}
+\}
+\nwendcode{}\nwbegindocs{22}\nwdocspar
 
 \subsection{\texttt{Man}}
 \noindent \textbf{Ansvar:} konkret subklass av \texttt{Human} som representerar en man. Implementeras på precis samma sätt som NonBinary och Woman.
 
-Filen [[human/Man.java]]:
+Filen {\Tt{}human/Man.java\nwendquote}:
 
-<<human/Man.java>>=
+\nwenddocs{}\nwbegincode{23}\moddef{human/Man.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 package human;
 
-final class Man extends Human {
-    Man(String name, String pnr) {
+final class Man extends Human \{
+    Man(String name, String pnr) \{
         super(name, pnr);
-    }
+    \}
 
     @Override
-    public String toString() {
+    public String toString() \{
         return "Jag är man och heter " + getName();
-    }
-}
-@
+    \}
+\}
+\nwendcode{}\nwbegindocs{24}\nwdocspar
 
 \subsection{\texttt{TestHuman}}
 \noindent \textbf{Ansvar:} visa fabriksanvändning och utskrift. Testprogrammet
 ligger i default\-paketet och kan endast skapa objekt via \texttt{Human.create}.
 
-Filen [[TestHuman.java]] ser översiktligt ut så här:
+Filen {\Tt{}TestHuman.java\nwendquote} ser översiktligt ut så här:
 
-<<TestHuman.java>>=
+\nwenddocs{}\nwbegincode{25}\moddef{TestHuman.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 import human.Human;
 
-public class TestHuman {
-  <<TestHuman main>>
-}
-@
+public class TestHuman \{
+  \LA{}TestHuman main\RA{}
+\}
+\nwendcode{}\nwbegindocs{26}\nwdocspar
 
 \subsubsection{\texttt{main}}
 Vi skapar ett objekt av varje typ via fabriken och skriver ut.
 
-<<TestHuman main>>=
-  public static void main(String[] args) {
+\nwenddocs{}\nwbegincode{27}\moddef{TestHuman main}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+  public static void main(String[] args) \{
     Human billie = Human.create("Billie", "xxxxxx-560x"); 
     Human anna   = Human.create("Anna",   "xxxxxx-642x"); 
     Human magnus = Human.create("Magnus", "xxxxxx-011x"); 
@@ -244,6 +244,8 @@ Vi skapar ett objekt av varje typ via fabriken och skriver ut.
 
     // Följande rader ska INTE kompilera
     //NonBinary nb = new NonBinary("X", "000000-5600");    // ej synlig utanför paketet
-    //Human h = new Human("X", "000000-5600") {};          // Human() ej synlig + abstrakt
-  }
-@
+    //Human h = new Human("X", "000000-5600") \{\};          // Human() ej synlig + abstrakt
+  \}
+\nwendcode{}\nwbegindocs{28}\nwdocspar
+\nwenddocs{}\end{document}
+
